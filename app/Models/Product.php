@@ -4,6 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use NumberFormatter;
 
 class Product extends Model
 {
@@ -21,4 +24,20 @@ class Product extends Model
         'price',
         'quantity',
     ];
+
+
+    // Relationships
+    public function categories(): BelongsToMany
+    {
+        return $this->belongsToMany(Category::class);
+    }
+
+
+    // Accessors & Mutators
+    protected function image(): Attribute
+    {
+        return Attribute::make(
+            get: fn (string $value) => '/storage/images/' . $value,
+        );
+    }
 }

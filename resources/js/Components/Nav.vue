@@ -18,7 +18,7 @@ const logout = () => {
         <div class="flex">
           <!-- Logo -->
           <div class="shrink-0 flex items-center">
-            <Link :href="route('welcome')">
+            <Link :href="route('welcome')" class="font-montserrat block w-auto hover:text-yellow-500 transition">
             Coder's Shop
             </Link>
           </div>
@@ -30,20 +30,20 @@ const logout = () => {
             <div class="flex items-center space-x-3 relative">
 
               <Link :href="route('dashboard')" class="hover:text-yellow-500 transition" v-if="$page.props.user">
-              Dashboard
+                Dashboard
               </Link>
 
               <template v-else>
                 <Link :href="route('register')" class="hover:text-yellow-500 transition">
-                Register
+                  Register
                 </Link>
                 <Link :href="route('login')" class="hover:text-yellow-500 transition">
-                Login
+                  Login
                 </Link>
               </template>
 
-              <Link href="#" class="hover:text-yellow-500 transition">
-              Shop
+              <Link :href="route('shop.index')" class="hover:text-yellow-500 transition">
+                Shop
               </Link>
 
               <form method="POST" @submit.prevent="logout" v-if="$page.props.user">
@@ -56,7 +56,7 @@ const logout = () => {
                 <span class="bg-red-600 text-white text-xs rounded-md p-1 absolute" style="top: -10px; right: -8px;">
                   3
                 </span>
-                <icon name="cart" class="w-4 h-4 fill-current"/>
+                <Icon name="cart" class="w-4 h-4 fill-current"/>
               </Link>
 
             </div>
@@ -102,17 +102,18 @@ const logout = () => {
       </template>
 
       <div class="pt-2 pb-3 space-y-1">
-        <ResponsiveNavLink href="#">
+        <ResponsiveNavLink :href="route('shop.index')">
           Shop
         </ResponsiveNavLink>
       </div>
 
       <div class="pt-2 pb-3 space-y-1">
         <Link href="#"
-          class="flex items-center pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:text-red-700 hover:border-red-700 focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300 transition">
-        Shop
+          class="flex items-center pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:text-red-700 hover:border-red-700 focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300 transition"
+        >
+          Shop
         </Link>
-        <icon name="cart" class="w-4 h-4 text-red-700 fill-current" />
+        <Icon name="cart" class="w-4 h-4 text-red-700 fill-current" />
         <span class="ml-2">
           3 item(s) in cart
         </span>

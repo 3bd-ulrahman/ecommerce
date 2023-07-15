@@ -5,7 +5,8 @@ import GrayButton from '@/Components/Buttons/GrayButton.vue';
 import { usePage } from '@inertiajs/vue3';
 
 defineProps({
-  products: Object
+  featured: Object,
+  categories: Object
 });
 </script>
 
@@ -13,25 +14,21 @@ defineProps({
   <app-layout title="Welcome">
 
     <div class="relative">
-      <img :src="'/storage/images/site/hand_craft.jpg'" alt="Coder's Store"
-        class="w-full h-96 opacity-75 object-cover">
+      <img :src="'/storage/images/site/hand_craft.jpg'" alt="Coder's Store" class="w-full h-96 opacity-75 object-cover">
+
       <div class="flex flex-col justify-around items-center absolute inset-0">
-        <span class="text-white text-xl">Lorem ipsum dolor sit amet.</span>
+        <span class="text-white text-xl">
+          Lorem ipsum dolor sit amet.
+        </span>
         <div class="flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4">
-          <gray-button type="href" href="#" class="text-md">
-            Womens
-          </gray-button>
-          <gray-button type="href" href="#" class="text-md">
-            Mens
-          </gray-button>
-          <gray-button type="href" href="#" class="text-md">
-            Kids
-          </gray-button>
-          <gray-button as="href" href="#" class="text-md">
-            Home Goods
+          <gray-button v-for="(category, index) in categories" :key="index"
+            type="href" :href="route('shop.index', { category: category.slug })" class="text-md"
+          >
+            {{ category.name }}
           </gray-button>
         </div>
       </div>
+
     </div>
 
     <div class="text-center border-t border-b py-4">
@@ -39,37 +36,17 @@ defineProps({
     </div>
 
     <div class="flex flex-col max-w-7xl mx-auto px-4 sm:container sm:flex-row sm:space-x-4 sm:my-4 sm:px-6 lg:px-8">
-      <Link href="#" class="flex flex-col w-full h-full mb-4">
-      <div class="text-center text-white bg-gray-700 py-2">
-        <span>
-          test
-        </span>
-      </div>
-      <img :src="'/storage/images/default.jpg'" alt="#" class="h-72 object-cover md:w-72 lg:w-96">
-      </Link>
-      <Link href="#" class="flex flex-col w-full h-full mb-4">
-      <div class="text-center text-white bg-gray-700 py-2">
-        <span>
-          test
-        </span>
-      </div>
-      <img :src="'/storage/images/default.jpg'" alt="#" class="h-72 object-cover md:w-72 lg:w-96">
-      </Link>
-      <Link href="#" class="flex flex-col w-full h-full mb-4">
-      <div class="text-center text-white bg-gray-700 py-2">
-        <span>
-          test
-        </span>
-      </div>
-      <img :src="'/storage/images/default.jpg'" alt="#" class="h-72 object-cover md:w-72 lg:w-96">
-      </Link>
-      <Link href="#" class="flex flex-col w-full h-full mb-4">
-      <div class="text-center text-white bg-gray-700 py-2">
-        <span>
-          test
-        </span>
-      </div>
-      <img :src="'/storage/images/default.jpg'" alt="#" class="h-72 object-cover md:w-72 lg:w-96">
+      <Link
+        href="#"
+        v-for="(product, index) in featured" :key="index"
+        class="flex flex-col w-full h-full mb-4"
+      >
+        <div class="text-center text-white bg-gray-700 py-2">
+          <span>
+            {{ product.name }}
+          </span>
+        </div>
+        <img :src="product.image" :alt="product.name" class="h-72 object-cover md:w-72 lg:w-96">
       </Link>
     </div>
 

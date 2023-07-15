@@ -4,26 +4,29 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Product;
+use App\Repositories\ProductRepository;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
-class WelcomeController extends Controller
+class ShopController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $categories = Category::query()->take(4)->inRandomOrder()->get([
-            'name', 'slug'
-        ]);
+        $categories = Category::all();
 
-        $featured = Product::query()->whereNot('image', 'default.jpg')->take(4)->inRandomOrder()->get([
-            'name', 'slug', 'image'
-        ]);
+        $products = Product::query()->when(request()->category, function ($query) {
+            $query->whereHas('categories', function($query) {
+                $query->where('slug', request()->category);
+            })->when(request()->sort === 'high_low', function ($query) {
+                $query->orderBy('price', 'desc');
+            }, fn($query) => $query->orderBy('price', 'asc'));
+        })->inRandomOrder()->get();
 
-        return Inertia::render('Welcome', compact('categories', 'featured'
-        ));
+
+        return Inertia::render('Shop/Index', compact('categories', 'products'));
     }
 
     /**
@@ -47,7 +50,9 @@ class WelcomeController extends Controller
      */
     public function show(Product $product)
     {
-        //
+        return Inertia::render('Shop/Show', [
+            'product' => $product
+        ]);
     }
 
     /**

@@ -21,6 +21,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Inertia::share('Quote', Inspiring::quote());
+        Inertia::share('quote', Inspiring::quote());
     }
 }
