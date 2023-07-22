@@ -2,7 +2,6 @@
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { Link } from '@inertiajs/vue3';
 import GrayButton from '@/Components/Buttons/GrayButton.vue';
-import { usePage } from '@inertiajs/vue3';
 
 defineProps({
   featured: Object,
@@ -36,9 +35,7 @@ defineProps({
     </div>
 
     <div class="flex flex-col max-w-7xl mx-auto px-4 sm:container sm:flex-row sm:space-x-4 sm:my-4 sm:px-6 lg:px-8">
-      <Link
-        href="#"
-        v-for="(product, index) in featured" :key="index"
+      <Link :href="route('shop.show', product.slug)" v-for="(product, index) in featured" :key="index"
         class="flex flex-col w-full h-full mb-4"
       >
         <div class="text-center text-white bg-gray-700 py-2">

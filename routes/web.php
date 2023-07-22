@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Cart\CartController;
 use App\Http\Controllers\ShopController;
 use App\Http\Controllers\WelcomeController;
 use Illuminate\Foundation\Application;
@@ -20,10 +21,17 @@ use Inertia\Inertia;
 
 Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
 
+
 // Shop
 Route::get('shop', [ShopController::class, 'index'])->name('shop.index');
 Route::get('shop/{product:slug}', [ShopController::class, 'show'])->name('shop.show');
 
+
+// Cart
+Route::resource('cart', CartController::class);
+
+
+// Auth
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),

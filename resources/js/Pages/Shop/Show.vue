@@ -5,18 +5,18 @@ import SecondaryHeader from '@/Components/SecondaryHeader.vue';
 import GrayButton from '@/Components/Buttons/GrayButton.vue';
 import { reactive } from 'vue';
 
-defineProps(['product']);
-
-const image = 'storage/images/products/womens-8.png';
+const props = defineProps({
+  product: Object
+});
 
 const form = reactive({
-  id: null,
-  name: null,
-  price: null,
-  product_code: null,
-  details: null,
-  image: null,
-  slug: null,
+  id: props.id,
+  name: props.name,
+  price: props.price,
+  product_code: props.product_code,
+  details: props.details,
+  image: props.image,
+  slug: props.slug,
   quantity: 1,
 });
 </script>
@@ -96,17 +96,35 @@ const form = reactive({
           </div>
 
           <div class="mt-4">
-            <div class="flex items-center">
+            <template v-if="product.quantity <= 0">
+              <div class="mt-4">
+                <span class="text-2xl text-red-600 font-semibold italic uppercase">
+                  Sold Out
+                </span>
+              </div>
+            </template>
+
+            <template v-else-if="product.quantity <= 5">
+              <div class="mt-4">
+                <span class="text-2xl text-yellow-600 font-semibold italic uppercase">
+                  Only a few left
+                </span>
+              </div>
+            </template>
+
+            <div class="flex items-center" v-if="product.quantity != 0">
               <label for="quantity" class="flex-1 text-xl capitalize">Qty:</label>
-              <select class="flex-1 w-full border bg-white rounded px-3 py-1 outline-none" tabindex="1"
-                v-model="form.quantity">
-                <option :value="qty" :selected="qty === quantity" v-for="(qty, index) in product.quantity" :key="index">{{
-                  qty }}</option>
+              <select v-model="form.quantity" tabindex="1"
+                class="flex-1 w-full border bg-white rounded px-3 py-1 outline-none"
+              >
+                <option v-for="(qty, index) in product.quantity" :key="index" :value="qty" :selected="qty === quantity">
+                  {{ qty }}
+                </option>
               </select>
             </div>
           </div>
 
-          <div class="text-center mt-4">
+          <div class="text-center mt-4" v-if="product.quantity > 0">
             <gray-button as="submit" class="text-sm">
               <span>Add to Cart</span>
             </gray-button>
