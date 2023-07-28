@@ -1,7 +1,14 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { Link } from '@inertiajs/vue3';
-import OrderTotals from '@/Components/OrderTotals.vue'
+import OrderTotals from '@/Components/OrderTotals.vue';
+
+defineProps([
+  'cartItems',
+  'taxRate',
+  'cartSubTotal',
+  'cartTotal'
+]);
 </script>
 
 <template>
@@ -12,11 +19,11 @@ import OrderTotals from '@/Components/OrderTotals.vue'
       <div class="flex-1">
 
         <div class="flex flex-col items-center mb-2 md:flex-row md:justify-between">
-          <p class="text-red-600 text-2xl font-semibold">
+          <p v-if="$page.props.cartCount < 0" class="text-red-600 text-2xl font-semibold">
             Your cart is empty!
           </p>
-          <p class="text-red-600 text-2xl font-semibold">
-            5 item(s) in cart
+          <p v-else class="text-red-600 text-2xl font-semibold">
+            {{ $page.props.cartCount }} item(s) in cart
           </p>
           <Link :href="route('shop.index')" class="underline hover:text-red-700 transition">
             Continue Shopping
@@ -32,16 +39,16 @@ import OrderTotals from '@/Components/OrderTotals.vue'
         </div>
 
         <div>
-          <div class="flex justify-between border-b border-black py-2">
+          <div v-for="(item, index) in cartItems" :key="index" class="flex justify-between border-b border-black py-2">
 
             <div class="flex space-x-4 w-1/2">
-              <Link href="#">
-                <img src="/storage/images/site/hand_craft.jpg" class="object-cover" alt="">
+              <Link :href="route('shop.show', item.options.slug)" class="flex flex-1">
+                <img :src="item.options.image" class="object-cover" :alt="item.name">
               </Link>
               <div class="flex flex-1 flex-col justify-between">
-                <Link href="#" class="flex flex-col">
-                  <span>Name</span>
-                  <span>Details</span>
+                <Link :href="route('shop.show', item.options.slug)" class="flex flex-col">
+                  <span>{{ item.name }}</span>
+                  <span>{{ item.options.details.substring(0, 10) + '...' }}</span>
                 </Link>
                 <div class="flex flex-col mt-4">
                   <form>
@@ -65,7 +72,7 @@ import OrderTotals from '@/Components/OrderTotals.vue'
                 </select>
               </div>
               <span class="flex-1 text-right">
-                $5.99 ea.
+                ${{ item.price }} ea.
               </span>
             </div>
 
@@ -129,7 +136,12 @@ import OrderTotals from '@/Components/OrderTotals.vue'
       </div>
 
       <div class="flex-1">
-        <OrderTotals />
+        <OrderTotals
+          :cartItems="cartItems"
+          :taxRate="taxRate"
+          :cartSubTotal="cartSubTotal"
+          :cartTotal="cartTotal"
+        />
       </div>
 
     </div>

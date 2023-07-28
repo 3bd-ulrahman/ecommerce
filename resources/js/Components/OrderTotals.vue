@@ -1,5 +1,14 @@
 <script setup>
 import YellowButton from './Buttons/YellowButton.vue';
+
+const props = defineProps([
+  'cartItems',
+  'taxRate',
+  'cartSubTotal',
+  'cartTotal'
+]);
+
+const estimatedTax = (props.cartSubTotal / 100) * (props.taxRate / 100);
 </script>
 
 <template>
@@ -11,7 +20,7 @@ import YellowButton from './Buttons/YellowButton.vue';
         <span class="text-white">
           Order Total(before tax & discount(s))
         </span>
-        <span class="text-yellow-500">$4.00</span>
+        <span class="text-yellow-500">{{ $filters.formatCurrency(cartSubTotal) }}</span>
       </div>
 
       <div>
@@ -27,8 +36,8 @@ import YellowButton from './Buttons/YellowButton.vue';
         <span class="px-4">Order Summary</span>
 
         <div class="flex justify-between bg-white px-4 py-2 mt-4">
-          <span>Item(s) subtotal(5)</span>
-          <span>$14.99</span>
+          <span>Items subtotal({{ $page.props.cartCount }})</span>
+          <span>{{ $filters.formatCurrency(cartSubTotal) }}</span>
         </div>
 
         <div class="flex justify-between px-4 mt-4">
@@ -48,16 +57,16 @@ import YellowButton from './Buttons/YellowButton.vue';
 
         <div class="flex justify-between px-4 mt-4">
           <span>Estimated Tax</span>
-          <span>8.48%</span>
+          <span>${{ estimatedTax }}</span>
         </div>
 
         <div class=" bg-white px-4 py-2 mt-4">
           <div class="flex justify-between">
             <span>Order Total</span>
-            <span>$4.99</span>
+            <span>${{ cartTotal }}</span>
           </div>
           <div class="flex flex-col">
-            <span>(8.48% tax rate)</span>
+            <span>({{ taxRate }}% tax rate)</span>
             <span>Lorem ipsum dolor sit amet.</span>
           </div>
         </div>

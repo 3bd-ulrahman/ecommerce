@@ -1,6 +1,6 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
-import { Link } from '@inertiajs/vue3';
+import { Link, router, useForm } from '@inertiajs/vue3';
 import SecondaryHeader from '@/Components/SecondaryHeader.vue';
 import GrayButton from '@/Components/Buttons/GrayButton.vue';
 import { reactive } from 'vue';
@@ -10,15 +10,20 @@ const props = defineProps({
 });
 
 const form = reactive({
-  id: props.id,
-  name: props.name,
-  price: props.price,
-  product_code: props.product_code,
-  details: props.details,
-  image: props.image,
-  slug: props.slug,
+  id: props.product.id,
+  name: props.product.name,
+  price: props.product.price,
+  product_code: props.product.product_code,
+  details: props.product.details,
+  image: props.product.image,
+  slug: props.product.slug,
+  totalQuantity: props.product.quantity,
   quantity: 1,
 });
+
+const submit = function () {
+  router.post(route('cart.store', form));
+};
 </script>
 
 <template>
@@ -68,7 +73,7 @@ const form = reactive({
         </div>
       </div>
       <div class="flex-1 space-y-6 my-4 sm:mt-0 sm:border-l sm:pl-4">
-        <form>
+        <form @submit.prevent="submit()">
           <div class="flex justify-between items-center">
             <h2 class="text-2xl font-semibold capitalize italic">{{ product.name }}</h2>
             <div class="text-xl capitalize italic">

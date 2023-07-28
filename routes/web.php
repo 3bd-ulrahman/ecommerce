@@ -3,8 +3,6 @@
 use App\Http\Controllers\Cart\CartController;
 use App\Http\Controllers\ShopController;
 use App\Http\Controllers\WelcomeController;
-use Illuminate\Foundation\Application;
-use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -30,6 +28,9 @@ Route::get('shop/{product:slug}', [ShopController::class, 'show'])->name('shop.s
 // Cart
 Route::resource('cart', CartController::class);
 
+Route::get('test', function () {
+    return session()->all();
+});
 
 // Auth
 Route::middleware([
