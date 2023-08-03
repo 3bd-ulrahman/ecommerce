@@ -1,14 +1,53 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
-import { Link } from '@inertiajs/vue3';
+import { Link, router } from '@inertiajs/vue3';
 import OrderTotals from '@/Components/OrderTotals.vue';
+import { computed, reactive } from 'vue';
 
-defineProps([
-  'cartItems',
-  'taxRate',
-  'cartSubTotal',
-  'cartTotal'
-]);
+const props = defineProps({
+  cartItems: Object,
+  taxRate: Number,
+  cartSubTotal: String,
+  cartTotal: String,
+  saveForLaterItems: Object
+});
+
+const form  = reactive({
+  cartItems: props.cartItems,
+  quantity: 0
+});
+
+
+// cart
+const moveToCart = (rowId) => {
+  router.post(route('cart.move-to-cart.store', rowId), null, {
+    preserveScroll: true
+  });
+};
+
+const removeFromCart = (rowId) => {
+  router.delete(route('cart.destroy', rowId), {
+    preserveScroll: true
+  });
+};
+
+
+// saveForLater
+const saveForLaterItemsCount = computed(() => {
+  return Object.keys(props.saveForLaterItems).length;
+});
+
+const saveForLater = (rowId) => {
+  router.post(route('cart.save-for-later.store', rowId), null, {
+    preserveScroll: true
+  });
+};
+
+const removeFromSaveForLater = (rowId) => {
+  router.delete(route('cart.save-for-later.destroy', rowId), {
+    preserveScroll: true
+  });
+};
 </script>
 
 <template>
@@ -30,7 +69,7 @@ defineProps([
           </Link>
         </div>
 
-        <div class="flex justify-between border-t border-b border-black py-2">
+        <div v-if="$page.props.cartCount > 0" class="flex justify-between border-t border-b border-black py-2">
           <div class="w-1/3">Item</div>
           <div class="flex justify-between w-1/2">
             <span class="flex-1 text-center">Quantity</span>
@@ -42,27 +81,36 @@ defineProps([
           <div v-for="(item, index) in cartItems" :key="index" class="flex justify-between border-b border-black py-2">
 
             <div class="flex space-x-4 w-1/2">
+
               <Link :href="route('shop.show', item.options.slug)" class="flex flex-1">
                 <img :src="item.options.image" class="object-cover" :alt="item.name">
               </Link>
+
               <div class="flex flex-1 flex-col justify-between">
+
                 <Link :href="route('shop.show', item.options.slug)" class="flex flex-col">
                   <span>{{ item.name }}</span>
                   <span>{{ item.options.details.substring(0, 10) + '...' }}</span>
                 </Link>
+
                 <div class="flex flex-col mt-4">
-                  <form>
+
+                  <form @submit.prevent="removeFromCart(item.rowId)">
                     <button type="submit" class="hover:text-yellow-500">
                       Remove
                     </button>
                   </form>
-                  <form>
+
+                  <form @submit.prevent="saveForLater(item.rowId)">
                     <button type="submit" class="hover:text-yellow-500">
                       Save for later
                     </button>
                   </form>
+
                 </div>
+
               </div>
+
             </div>
 
             <div class="flex justify-between w-1/2">
@@ -72,7 +120,7 @@ defineProps([
                 </select>
               </div>
               <span class="flex-1 text-right">
-                ${{ item.price }} ea.
+                ${{ item.price }}
               </span>
             </div>
 
@@ -80,11 +128,11 @@ defineProps([
         </div>
 
         <div class="text-center text-red-600 text-2xl font-semibold mt-4 mb-2 md:text-left">
-          <p>You have saved no items for later!</p>
-          <p>5 item(s) saved for later</p>
+          <p v-if="saveForLaterItemsCount <= 0">You have saved no items for later!</p>
+          <p v-else>{{ saveForLaterItemsCount }} item(s) saved for later</p>
         </div>
 
-        <div class="flex justify-between border-y border-black py-2">
+        <div v-if="saveForLaterItemsCount > 0" class="flex justify-between border-y border-black py-2">
           <div class="w-1/3">Item</div>
           <div class="flex justify-between w-1/2">
             <span class="flex-1 text-center">Quantity</span>
@@ -93,29 +141,36 @@ defineProps([
         </div>
 
         <div>
-          <div class="flex justify-between border-y border-black py-2">
+          <div v-for="(item, index) in saveForLaterItems" :key="index" class="flex justify-between border-y border-black py-2">
 
             <div class="flex space-x-4 w-1/2">
-              <Link href="#">
-                <img src="/storage/images/site/hand_craft.jpg" class="object-cover" alt="">
-              </Link>
-              <div class="flex flex-1 flex-col justify-between">
-                <Link href="#" class="flex flex-col">
-                  <span>Name</span>
-                  <span>Details</span>
+              <div class="w-1/3">
+                <Link :href="route('shop.show', item.options.slug)">
+                  <img :src="item.options.image" class="object-cover" :alt="item.name">
                 </Link>
+              </div>
+
+              <div class="flex flex-1 flex-col justify-between">
+
+                <Link :href="route('shop.show', item.options.slug)" class="flex flex-col">
+                  <span>{{ item.name }}</span>
+                </Link>
+
                 <div class="flex flex-col mt-4">
-                  <form>
+
+                  <form @submit.prevent="removeFromSaveForLater(item.rowId)">
                     <button type="submit" class="hover:text-yellow-500">
                       Remove
                     </button>
                   </form>
-                  <form>
+
+                  <form @submit.prevent="moveToCart(item.rowId)">
                     <button type="submit" class="hover:text-yellow-500">
                       Move to cart
                     </button>
                   </form>
                 </div>
+
               </div>
             </div>
 
@@ -126,7 +181,7 @@ defineProps([
                 </select>
               </div>
               <span class="flex-1 text-right">
-                $5.99 ea.
+                {{ $filters.formatCurrency(item.price) }}
               </span>
             </div>
 

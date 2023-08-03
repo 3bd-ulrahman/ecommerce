@@ -52,8 +52,8 @@ const logout = () => {
                 </button>
               </form>
 
-              <Link href="#" class="hover:text-red-700 transition">
-                <span class="bg-red-600 text-white text-xs rounded-md p-1 absolute" style="top: -10px; right: -8px;">
+              <Link :href="route('cart.index')" class="hover:text-red-700 transition">
+                <span v-if="$page.props.cartCount > 0" class="bg-red-600 text-white text-xs rounded-md p-1 absolute" style="top: -10px; right: -8px;">
                   {{ $page.props.cartCount }}
                 </span>
                 <Icon name="cart" class="w-4 h-4 fill-current"/>
@@ -107,14 +107,14 @@ const logout = () => {
         </ResponsiveNavLink>
       </div>
 
-      <div class="pt-2 pb-3 space-y-1">
-        <Link href="#"
+      <div v-if="$page.props.cartCount" class="pt-2 pb-3 space-y-1">
+        <Link :href="route('cart.index')"
           class="flex items-center pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-gray-600 hover:text-red-700 hover:border-red-700 focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300 transition"
         >
-        <Icon name="cart" class="w-4 h-4 text-red-700 fill-current" />
-        <span class="ml-2">
-          {{ $page.props.cartCount }} item(s) in cart
-        </span>
+          <Icon name="cart" class="w-4 h-4 text-red-700 fill-current" />
+          <span class="ml-2">
+            {{ $page.props.cartCount }} item(s) in cart
+          </span>
         </Link>
       </div>
 
