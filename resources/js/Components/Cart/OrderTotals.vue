@@ -8,7 +8,7 @@ const props = defineProps([
   'cartTotal'
 ]);
 
-const estimatedTax = (props.cartSubTotal / 100) * (props.taxRate / 100);
+const estimatedTax = (props.cartSubTotal * props.taxRate) / 100;
 </script>
 
 <template>
@@ -20,7 +20,9 @@ const estimatedTax = (props.cartSubTotal / 100) * (props.taxRate / 100);
         <span class="text-white">
           Order Total(before tax & discount(s))
         </span>
-        <span class="text-yellow-500">{{ $filters.formatCurrency(cartSubTotal) }}</span>
+        <span class="text-yellow-500">
+          {{ $filters.formatCurrency(cartSubTotal) }}
+        </span>
       </div>
 
       <div>

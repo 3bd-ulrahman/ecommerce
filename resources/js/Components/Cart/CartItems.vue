@@ -1,5 +1,5 @@
 <script setup>
-import { router } from '@inertiajs/vue3';
+import { Link, router } from '@inertiajs/vue3';
 import { computed } from 'vue';
 
 const props = defineProps({
@@ -136,7 +136,7 @@ const removeFromSaveForLater = (rowId) => {
         </select>
       </div>
       <span class="flex-1 text-right">
-        ${{ item.price }}
+        {{ $filters.formatCurrency(item.price) }}
       </span>
     </div>
 

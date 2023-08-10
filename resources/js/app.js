@@ -16,7 +16,7 @@ createInertiaApp({
         const VueApp = createApp({ render: () => h(App, props) })
         VueApp.config.globalProperties.$filters = {
             formatCurrency(value) {
-                return value.toLocaleString('en-US', {
+                return parseInt(value).toLocaleString('en-US', {
                     style: 'currency',
                     currency: 'USD'
                 })

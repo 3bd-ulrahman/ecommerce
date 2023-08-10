@@ -51,7 +51,7 @@ class CartController extends Controller
             $request->id,
             $request->name,
             $request->integer('quantity'),
-            $request->price,
+            $request->integer('price'),
             [
                 'total_quantity' => $request->integer('totalQuantity'),
                 'product_code' => $request->product_code,
