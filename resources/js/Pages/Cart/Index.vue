@@ -1,29 +1,38 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { Link, router } from '@inertiajs/vue3';
-import OrderTotals from '@/Components/OrderTotals.vue';
+import OrderTotals from '@/Components/Cart/OrderTotals.vue';
+import CartItems from '@/Components/Cart/CartItems.vue';
 import { computed, reactive } from 'vue';
 
 const props = defineProps({
   cartItems: Object,
+  saveForLaterItems: Object,
   taxRate: Number,
   cartSubTotal: String,
   cartTotal: String,
-  saveForLaterItems: Object
 });
 
-const form  = reactive({
-  cartItems: props.cartItems,
-  quantity: 0
-});
+// const form  = reactive({
+//   cartItems: props.cartItems,
+//   quantity: 0
+// });
 
 
-// cart
+/**
+ * Cart
+ */
 const moveToCart = (rowId) => {
   router.post(route('cart.move-to-cart.store', rowId), null, {
     preserveScroll: true
   });
 };
+
+const updateCartQuantity = (rowId, quantity) => {
+  router.patch(route('cart.update', rowId), {quantity: quantity}, {
+    preserveScroll: true
+  });
+}
 
 const removeFromCart = (rowId) => {
   router.delete(route('cart.destroy', rowId), {
@@ -32,9 +41,17 @@ const removeFromCart = (rowId) => {
 };
 
 
-// saveForLater
+/*
+ * Save for later
+*/
 const saveForLaterItemsCount = computed(() => {
-  return Object.keys(props.saveForLaterItems).length;
+  let count = 0;
+
+  Object.values(props.saveForLaterItems).forEach(item => {
+    count += item.qty;
+  });
+
+  return count;
 });
 
 const saveForLater = (rowId) => {
@@ -42,6 +59,12 @@ const saveForLater = (rowId) => {
     preserveScroll: true
   });
 };
+
+const updateSaveForLaterQuantity = (rowId, quantity) => {
+  router.patch(route('cart.save-for-later.update', rowId), {quantity: quantity}, {
+    preserveScroll: true
+  });
+}
 
 const removeFromSaveForLater = (rowId) => {
   router.delete(route('cart.save-for-later.destroy', rowId), {
@@ -52,7 +75,6 @@ const removeFromSaveForLater = (rowId) => {
 
 <template>
   <app-layout title="Cart">
-
     <div class="max-w-7xl mx-auto p-4 space-y-4 sm:px-6 md:flex md:space-y-0 md:space-x-4 lg:px-8">
 
       <div class="flex-1">
@@ -69,124 +91,14 @@ const removeFromSaveForLater = (rowId) => {
           </Link>
         </div>
 
-        <div v-if="$page.props.cartCount > 0" class="flex justify-between border-t border-b border-black py-2">
-          <div class="w-1/3">Item</div>
-          <div class="flex justify-between w-1/2">
-            <span class="flex-1 text-center">Quantity</span>
-            <span class="flex-1 text-right">Price</span>
-          </div>
-        </div>
-
-        <div>
-          <div v-for="(item, index) in cartItems" :key="index" class="flex justify-between border-b border-black py-2">
-
-            <div class="flex space-x-4 w-1/2">
-
-              <Link :href="route('shop.show', item.options.slug)" class="flex flex-1">
-                <img :src="item.options.image" class="object-cover" :alt="item.name">
-              </Link>
-
-              <div class="flex flex-1 flex-col justify-between">
-
-                <Link :href="route('shop.show', item.options.slug)" class="flex flex-col">
-                  <span>{{ item.name }}</span>
-                  <span>{{ item.options.details.substring(0, 10) + '...' }}</span>
-                </Link>
-
-                <div class="flex flex-col mt-4">
-
-                  <form @submit.prevent="removeFromCart(item.rowId)">
-                    <button type="submit" class="hover:text-yellow-500">
-                      Remove
-                    </button>
-                  </form>
-
-                  <form @submit.prevent="saveForLater(item.rowId)">
-                    <button type="submit" class="hover:text-yellow-500">
-                      Save for later
-                    </button>
-                  </form>
-
-                </div>
-
-              </div>
-
-            </div>
-
-            <div class="flex justify-between w-1/2">
-              <div class="flex-1 text-center">
-                <select class="border bg-white rounded outline-none py-0" tabindex="1">
-                  <option value="1">1</option>
-                </select>
-              </div>
-              <span class="flex-1 text-right">
-                ${{ item.price }}
-              </span>
-            </div>
-
-          </div>
-        </div>
+        <CartItems :items="cartItems" title="cart"/>
 
         <div class="text-center text-red-600 text-2xl font-semibold mt-4 mb-2 md:text-left">
           <p v-if="saveForLaterItemsCount <= 0">You have saved no items for later!</p>
           <p v-else>{{ saveForLaterItemsCount }} item(s) saved for later</p>
         </div>
 
-        <div v-if="saveForLaterItemsCount > 0" class="flex justify-between border-y border-black py-2">
-          <div class="w-1/3">Item</div>
-          <div class="flex justify-between w-1/2">
-            <span class="flex-1 text-center">Quantity</span>
-            <span class="flex-1 text-right">Price</span>
-          </div>
-        </div>
-
-        <div>
-          <div v-for="(item, index) in saveForLaterItems" :key="index" class="flex justify-between border-y border-black py-2">
-
-            <div class="flex space-x-4 w-1/2">
-              <div class="w-1/3">
-                <Link :href="route('shop.show', item.options.slug)">
-                  <img :src="item.options.image" class="object-cover" :alt="item.name">
-                </Link>
-              </div>
-
-              <div class="flex flex-1 flex-col justify-between">
-
-                <Link :href="route('shop.show', item.options.slug)" class="flex flex-col">
-                  <span>{{ item.name }}</span>
-                </Link>
-
-                <div class="flex flex-col mt-4">
-
-                  <form @submit.prevent="removeFromSaveForLater(item.rowId)">
-                    <button type="submit" class="hover:text-yellow-500">
-                      Remove
-                    </button>
-                  </form>
-
-                  <form @submit.prevent="moveToCart(item.rowId)">
-                    <button type="submit" class="hover:text-yellow-500">
-                      Move to cart
-                    </button>
-                  </form>
-                </div>
-
-              </div>
-            </div>
-
-            <div class="flex justify-between w-1/2">
-              <div class="flex-1 text-center">
-                <select class="border bg-white rounded outline-none py-0" tabindex="1">
-                  <option value="1">1</option>
-                </select>
-              </div>
-              <span class="flex-1 text-right">
-                {{ $filters.formatCurrency(item.price) }}
-              </span>
-            </div>
-
-          </div>
-        </div>
+        <CartItems :items="saveForLaterItems" title="saveForLater"/>
 
       </div>
 

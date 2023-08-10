@@ -14,7 +14,7 @@ defineProps({
 
     <div class="min-h-screen bg-gray-100">
       <Nav />
-
+      <h1>{{ CartItems }}</h1>
       <!-- Page Heading -->
       <header class="bg-gray-700 shadow">
         <div class="max-w-7xl mx-auto py-6 px-2 sm:px-6 lg:px-8">

@@ -40,7 +40,7 @@ class SaveForLaterController extends Controller
             $item->qty,
             $item->price,
             [
-                'total_quantity' => $item->options->totalQuantity,
+                'total_quantity' => $item->options->total_quantity,
                 'product_code' => $item->options->product_code,
                 'image' => $item->options->image,
                 'slug' => $item->options->slug,
@@ -72,7 +72,9 @@ class SaveForLaterController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        Cart::instance('saveForLater')->update($id, $request->integer('quantity'));
+
+        return to_route('cart.index');
     }
 
     /**

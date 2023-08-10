@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Cart;
 
 use App\Http\Controllers\Controller;
 use Gloudemans\Shoppingcart\Facades\Cart;
+use App\Models\Product;
 use Illuminate\Http\Request;
 
 class MoveToCartController extends Controller
@@ -23,7 +24,7 @@ class MoveToCartController extends Controller
             $item->qty,
             $item->price,
             [
-                'total_quantity' => $item->options->totalQuantity,
+                'total_quantity' => $item->options->total_quantity,
                 'product_code' => $item->options->product_code,
                 'image' => $item->options->image,
                 'slug' => $item->options->slug,

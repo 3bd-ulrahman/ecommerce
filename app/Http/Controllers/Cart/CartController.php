@@ -50,10 +50,10 @@ class CartController extends Controller
         Cart::add(
             $request->id,
             $request->name,
-            $request->quantity,
+            $request->integer('quantity'),
             $request->price,
             [
-                'total_quantity' => $request->totalQuantity,
+                'total_quantity' => $request->integer('totalQuantity'),
                 'product_code' => $request->product_code,
                 'image' => $request->image,
                 'slug' => $request->slug,
@@ -85,7 +85,9 @@ class CartController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        Cart::instance('default')->update($id, $request->integer('quantity'));
+
+        return to_route('cart.index');
     }
 
     /**

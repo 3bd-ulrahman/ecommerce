@@ -1,5 +1,5 @@
 <script setup>
-import YellowButton from './Buttons/YellowButton.vue';
+import YellowButton from '@/Components/Buttons/YellowButton.vue';
 
 const props = defineProps([
   'cartItems',

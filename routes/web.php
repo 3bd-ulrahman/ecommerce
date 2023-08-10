@@ -22,17 +22,28 @@ use Inertia\Inertia;
 Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
 
 
-// shop
+/**
+ * Shop
+ */
 Route::get('shop', [ShopController::class, 'index'])->name('shop.index');
 Route::get('shop/{product:slug}', [ShopController::class, 'show'])->name('shop.show');
 
 
-// cart
-Route::resource('cart', CartController::class);
+/**
+ * Cart
+ */
+Route::resource('cart', CartController::class)->parameter('cart', 'product');
+
 Route::post('cart/save-for-later/{product}', [SaveForLaterController::class, 'store'])->name('cart.save-for-later.store');
+Route::patch('cart/save-for-later/{product}', [SaveForLaterController::class, 'update'])->name('cart.save-for-later.update');
 Route::delete('cart/save-for-later/{product}', [SaveForLaterController::class, 'destroy'])->name('cart.save-for-later.destroy');
+
 Route::post('cart/move-to-cart/{product}', MoveToCartController::class)->name('cart.move-to-cart.store');
 
+
+Route::get('test', function () {
+    return session()->all();
+});
 
 // Auth
 Route::middleware([
