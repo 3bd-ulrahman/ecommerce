@@ -1,15 +1,15 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
-import { Link, router } from '@inertiajs/vue3';
+import { Link } from '@inertiajs/vue3';
 import SecondaryHeader from '@/Components/SecondaryHeader.vue';
 import GrayButton from '@/Components/Buttons/GrayButton.vue';
-import { reactive } from 'vue';
+import { useForm } from '@inertiajs/vue3'
 
 const props = defineProps({
   product: Object
 });
 
-const form = reactive({
+const form = useForm({
   id: props.product.id,
   name: props.product.name,
   price: props.product.price,
@@ -22,7 +22,14 @@ const form = reactive({
 });
 
 const submit = function () {
-  router.post(route('cart.store', form));
+  form.post(route('cart.store'), {
+    onSuccess: page => {
+      Toast.fire({
+        icon: 'success',
+        title: `${form.name} has been added successfully to your cart`
+      })
+    }
+  });
 };
 </script>
 
@@ -130,9 +137,9 @@ const submit = function () {
           </div>
 
           <div class="text-center mt-4" v-if="product.quantity > 0">
-            <gray-button as="submit" class="text-sm">
+            <GrayButton type="submit" :disabled="form.processing" class="text-sm">
               <span>Add to Cart</span>
-            </gray-button>
+            </GrayButton>
           </div>
         </form>
         <div class="flex flex-col divide-y">

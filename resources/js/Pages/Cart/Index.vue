@@ -13,34 +13,6 @@ const props = defineProps({
   cartTotal: String,
 });
 
-// const form  = reactive({
-//   cartItems: props.cartItems,
-//   quantity: 0
-// });
-
-
-/**
- * Cart
- */
-const moveToCart = (rowId) => {
-  router.post(route('cart.move-to-cart.store', rowId), null, {
-    preserveScroll: true
-  });
-};
-
-const updateCartQuantity = (rowId, quantity) => {
-  router.patch(route('cart.update', rowId), {quantity: quantity}, {
-    preserveScroll: true
-  });
-}
-
-const removeFromCart = (rowId) => {
-  router.delete(route('cart.destroy', rowId), {
-    preserveScroll: true
-  });
-};
-
-
 /*
  * Save for later
 */
@@ -53,24 +25,6 @@ const saveForLaterItemsCount = computed(() => {
 
   return count;
 });
-
-const saveForLater = (rowId) => {
-  router.post(route('cart.save-for-later.store', rowId), null, {
-    preserveScroll: true
-  });
-};
-
-const updateSaveForLaterQuantity = (rowId, quantity) => {
-  router.patch(route('cart.save-for-later.update', rowId), {quantity: quantity}, {
-    preserveScroll: true
-  });
-}
-
-const removeFromSaveForLater = (rowId) => {
-  router.delete(route('cart.save-for-later.destroy', rowId), {
-    preserveScroll: true
-  });
-};
 </script>
 
 <template>

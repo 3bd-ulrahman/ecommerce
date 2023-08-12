@@ -22,19 +22,37 @@ const count = computed(() => {
  */
  const moveToCart = (rowId) => {
   router.post(route('cart.move-to-cart.store', rowId), null, {
-    preserveScroll: true
+    preserveScroll: true,
+    onSuccess: page => {
+      Toast.fire({
+        icon: 'success',
+        title: 'Items has been successfully added to cart'
+      });
+    }
   });
 };
 
 const updateCartQuantity = (rowId, quantity) => {
   router.patch(route('cart.update', rowId), {quantity: quantity}, {
-    preserveScroll: true
+    preserveScroll: true,
+    onSuccess: page => {
+      Toast.fire({
+        icon: 'success',
+        title: 'Item in cart have been successfully updated'
+      });
+    }
   });
 }
 
 const removeFromCart = (rowId) => {
   router.delete(route('cart.destroy', rowId), {
-    preserveScroll: true
+    preserveScroll: true,
+    onSuccess: page => {
+      Toast.fire({
+        icon: 'success',
+        title: 'Item has been successfully removed from your cart'
+      });
+    }
   });
 };
 
@@ -44,19 +62,37 @@ const removeFromCart = (rowId) => {
 */
 const saveForLater = (rowId) => {
   router.post(route('cart.save-for-later.store', rowId), null, {
-    preserveScroll: true
+    preserveScroll: true,
+    onSuccess: page => {
+      Toast.fire({
+        icon: 'success',
+        title: 'Item has been successfully saved for later'
+      });
+    }
   });
 };
 
 const updateSaveForLaterQuantity = (rowId, quantity) => {
   router.patch(route('cart.save-for-later.update', rowId), {quantity: quantity}, {
-    preserveScroll: true
+    preserveScroll: true,
+    onSuccess: page => {
+      Toast.fire({
+        icon: 'success',
+        title: 'Item in save for later has been successfully updated'
+      });
+    }
   });
 }
 
 const removeFromSaveForLater = (rowId) => {
   router.delete(route('cart.save-for-later.destroy', rowId), {
-    preserveScroll: true
+    preserveScroll: true,
+    onSuccess: page => {
+      Toast.fire({
+        icon: 'success',
+        title: 'Item in save for later have been successfully removed'
+      });
+    }
   });
 };
 </script>

@@ -41,10 +41,6 @@ Route::delete('cart/save-for-later/{product}', [SaveForLaterController::class, '
 Route::post('cart/move-to-cart/{product}', MoveToCartController::class)->name('cart.move-to-cart.store');
 
 
-Route::get('test', function () {
-    return session()->all();
-});
-
 // Auth
 Route::middleware([
     'auth:sanctum',
