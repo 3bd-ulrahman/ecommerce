@@ -1,14 +1,55 @@
 <script setup>
 import YellowButton from '@/Components/Buttons/YellowButton.vue';
+import GrayButton from '../Buttons/GrayButton.vue';
+import { router, useForm } from '@inertiajs/vue3';
+import { computed, reactive } from 'vue';
 
-const props = defineProps([
-  'cartItems',
-  'taxRate',
-  'cartSubTotal',
-  'cartTotal'
-]);
+const props = defineProps({
+  cartItems: Object,
+  taxRate: Number,
+  cartSubTotal: String,
+  couponCode: String,
+  discount: Number,
+  cartTotal: String
+});
 
-const estimatedTax = (props.cartSubTotal * props.taxRate) / 100;
+const form = useForm({
+  coupon_code: props.couponCode
+});
+
+const applyCoupon = () => {
+  form.post(route('coupons.store'), {
+    preserveScroll: true,
+    onSuccess: page => {
+      Toast.fire({
+        icon: 'success',
+        title: 'Coupon has been applied'
+      });
+    }
+  });
+};
+
+const removeCoupon = () => {
+  router.delete(route('coupons.destroy'), {
+    preserveScroll: true,
+    onSuccess: page => {
+      Toast.fire({
+        icon: 'success',
+        title: 'Coupon has been removed'
+      });
+    }
+  });
+}
+
+const estimatedTax = computed(function () {
+  let value = ((props.cartSubTotal - props.discount) * props.taxRate) / 100;
+
+  if (value < 0) {
+    value = 0;
+  }
+
+  return value;
+});
 </script>
 
 <template>
@@ -47,10 +88,10 @@ const estimatedTax = (props.cartSubTotal * props.taxRate) / 100;
           <span>Free</span>
         </div>
 
-        <div class="flex justify-between px-4 mt-4">
-          <span>Discount Code (ABC123)</span>
-          <form>
-            <span>-$2.00</span>
+        <div v-if="props.couponCode" class="flex justify-between px-4 mt-4">
+          <span>Discount Code ({{ props.couponCode }})</span>
+          <form @submit.prevent="removeCoupon()">
+            <span>-{{ $filters.formatCurrency(discount) }}</span>
             <button type="submit" class="text-red-600 ml-2">
               X
             </button>
@@ -78,14 +119,37 @@ const estimatedTax = (props.cartSubTotal * props.taxRate) / 100;
             Secure Checkout
           </YellowButton>
         </div>
-
-        <div class="text-center mt-4">
-          <Link :href="route('shop.index')" class="underline hover:text-red-700 transition">
+      </div>
+      <div class="text-center mt-4">
+        <Link :href="route('shop.index')" class="underline hover:text-red-700 transition">
           Continue Shopping
-          </Link>
-        </div>
+        </Link>
       </div>
     </div>
 
+  </div>
+
+  <div v-if="! props.couponCode" class="flex flex-col items-center bg-gray-300 shadow-md rounded mt-4 py-6">
+    <span class="text-2xl font-semibold">Promo</span>
+    <form @submit.prevent="applyCoupon()" class="w-full">
+      <div class="bg-gray-300 px-4">
+        <div>
+
+          <div class="bg-white p-4 mt-4">
+            <input type="text" class="w-full" placeholder="Enter Promo Code Here" v-model="form.coupon_code">
+            <span v-if="$page.props.errors.message" class="text-md text-red-600 mt-2">
+              {{ $page.props.errors.message }}
+            </span>
+          </div>
+
+          <div class="text-center mt-4">
+            <GrayButton type="button" class="text-sm" :disabled="form.processing">
+              Apply
+            </GrayButton>
+          </div>
+
+        </div>
+      </div>
+    </form>
   </div>
 </template>

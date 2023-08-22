@@ -1,15 +1,17 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
-import { Link, router } from '@inertiajs/vue3';
+import { Link } from '@inertiajs/vue3';
 import OrderTotals from '@/Components/Cart/OrderTotals.vue';
 import CartItems from '@/Components/Cart/CartItems.vue';
-import { computed, reactive } from 'vue';
+import { computed } from 'vue';
 
 const props = defineProps({
   cartItems: Object,
   saveForLaterItems: Object,
   taxRate: Number,
   cartSubTotal: String,
+  couponCode: String,
+  discount: Number,
   cartTotal: String,
 });
 
@@ -58,10 +60,7 @@ const saveForLaterItemsCount = computed(() => {
 
       <div class="flex-1">
         <OrderTotals
-          :cartItems="cartItems"
-          :taxRate="taxRate"
-          :cartSubTotal="cartSubTotal"
-          :cartTotal="cartTotal"
+          v-bind="props"
         />
       </div>
 

@@ -21,6 +21,10 @@ class CartController extends Controller
 
         $cartSubTotal = Cart::subtotal();
 
+        $couponCode = session()->get('coupon')['code'] ?? null;
+
+        $discount = session()->get('coupon')['discount'] ?? 0;
+
         $cartTotal = Cart::total();
 
         $saveForLaterItems = Cart::instance('saveForLater')->content();
@@ -29,6 +33,8 @@ class CartController extends Controller
             'cartItems',
             'taxRate',
             'cartSubTotal',
+            'couponCode',
+            'discount',
             'cartTotal',
             'saveForLaterItems'
         ));

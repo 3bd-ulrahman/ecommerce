@@ -24,7 +24,7 @@ class ProductSeeder extends Seeder
                 'description' =>'Lorem '. $i . ' ipsum dolor sit amet, consectetur adipisicing elit. Ipsum temporibus iusto ipsa, asperiores voluptas unde aspernatur praesentium in? Aliquam, dolore!',
                 'image' => 'products/womens-'.$i.'.png',
                 'product_code' => $category->category_code.'-00'.$i,
-                'price' => rand(999, 9999),
+                'price' => rand(100, 1000),
                 'quantity' => rand(1,10),
             ])->categories()->attach($category);
         }
@@ -42,7 +42,7 @@ class ProductSeeder extends Seeder
                 'description' =>'Lorem '. $i . ' ipsum dolor sit amet, consectetur adipisicing elit. Ipsum temporibus iusto ipsa, asperiores voluptas unde aspernatur praesentium in? Aliquam, dolore!',
                 'image' => 'products/mens-'.$i.'.png',
                 'product_code' => $category->category_code.'-00'.$i,
-                'price' => rand(999, 9999),
+                'price' => rand(100, 1000),
                 'quantity' => rand(1,10),
             ])->categories()->attach($category);
         }
@@ -57,7 +57,7 @@ class ProductSeeder extends Seeder
                 'description' =>'Lorem '. $i . ' ipsum dolor sit amet, consectetur adipisicing elit. Ipsum temporibus iusto ipsa, asperiores voluptas unde aspernatur praesentium in? Aliquam, dolore!',
                 'image' => 'products/kids-'.$i.'.png',
                 'product_code' => $category->category_code.'-00'.$i,
-                'price' => rand(999, 9999),
+                'price' => rand(100, 1000),
                 'quantity' => rand(1,10),
             ])->categories()->attach($category);
         }
@@ -72,7 +72,7 @@ class ProductSeeder extends Seeder
                 'description' =>'Lorem '. $i . ' ipsum dolor sit amet, consectetur adipisicing elit. Ipsum temporibus iusto ipsa, asperiores voluptas unde aspernatur praesentium in? Aliquam, dolore!',
                 'image' => 'products/homegoods-'.$i.'.png',
                 'product_code' => $category->category_code.'-00'.$i,
-                'price' => rand(999, 9999),
+                'price' => rand(100, 1000),
                 'quantity' => rand(1,10),
             ])->categories()->attach($category);
         }

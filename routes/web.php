@@ -3,6 +3,7 @@
 use App\Http\Controllers\Cart\CartController;
 use App\Http\Controllers\Cart\MoveToCartController;
 use App\Http\Controllers\Cart\SaveForLaterController;
+use App\Http\Controllers\CouponController;
 use App\Http\Controllers\ShopController;
 use App\Http\Controllers\WelcomeController;
 use Illuminate\Support\Facades\Route;
@@ -39,6 +40,14 @@ Route::patch('cart/save-for-later/{product}', [SaveForLaterController::class, 'u
 Route::delete('cart/save-for-later/{product}', [SaveForLaterController::class, 'destroy'])->name('cart.save-for-later.destroy');
 
 Route::post('cart/move-to-cart/{product}', MoveToCartController::class)->name('cart.move-to-cart.store');
+
+
+/**
+ * COUPONS
+ */
+// Route::resource('coupons', CouponController::class)->only(['store', 'destroy']);
+Route::post('coupons' , [CouponController::class, 'store'])->name('coupons.store');
+Route::delete('coupons', [CouponController::class, 'destroy'])->name('coupons.destroy');
 
 
 // Auth
