@@ -5,7 +5,6 @@ import { router, useForm } from '@inertiajs/vue3';
 import { computed, reactive } from 'vue';
 
 const props = defineProps({
-  cartItems: Object,
   taxRate: Number,
   cartSubTotal: String,
   couponCode: String,

@@ -3,6 +3,7 @@
 use App\Http\Controllers\Cart\CartController;
 use App\Http\Controllers\Cart\MoveToCartController;
 use App\Http\Controllers\Cart\SaveForLaterController;
+use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\CouponController;
 use App\Http\Controllers\ShopController;
 use App\Http\Controllers\WelcomeController;
@@ -24,14 +25,14 @@ Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
 
 
 /**
- * Shop
+ * SHOP
  */
 Route::get('shop', [ShopController::class, 'index'])->name('shop.index');
 Route::get('shop/{product:slug}', [ShopController::class, 'show'])->name('shop.show');
 
 
 /**
- * Cart
+ * CART
  */
 Route::resource('cart', CartController::class)->parameter('cart', 'product');
 
@@ -45,9 +46,14 @@ Route::post('cart/move-to-cart/{product}', MoveToCartController::class)->name('c
 /**
  * COUPONS
  */
-// Route::resource('coupons', CouponController::class)->only(['store', 'destroy']);
 Route::post('coupons' , [CouponController::class, 'store'])->name('coupons.store');
 Route::delete('coupons', [CouponController::class, 'destroy'])->name('coupons.destroy');
+
+
+/**
+ * CHECKOUT
+ */
+Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
 
 
 // Auth

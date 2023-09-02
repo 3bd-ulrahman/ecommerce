@@ -20,11 +20,11 @@ defineProps({
           Lorem ipsum dolor sit amet.
         </span>
         <div class="flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4">
-          <gray-button v-for="(category, index) in categories" :key="index"
+          <GrayButton v-for="(category, index) in categories" :key="index"
             type="href" :href="route('shop.index', { category: category.slug })" class="text-md"
           >
             {{ category.name }}
-          </gray-button>
+          </GrayButton>
         </div>
       </div>
 
