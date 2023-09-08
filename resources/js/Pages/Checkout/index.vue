@@ -3,6 +3,8 @@ import OrderTotals from '@/Components/Cart/OrderTotals.vue';
 import YellowButton from '@/Components/Buttons/YellowButton.vue';
 import { useForm } from '@inertiajs/vue3';
 import states from '@/states.js';
+import { loadStripe } from '@stripe/stripe-js';
+import { onBeforeMount, ref } from 'vue';
 
 const props = defineProps({
   cartSubTotal: String,
@@ -25,11 +27,51 @@ const form = useForm({
 const errors = [];
 
 const loading = false;
-const disabled = true;
+
+const disabled = ref(true);
+
+const cardError = ref('');
+
+onBeforeMount(async () => {
+  const stripe = await loadStripe(import.meta.env.VITE_STRIPE_KEY);
+
+  const elements = stripe.elements({
+    mode: 'payment',
+    currency: 'usd',
+    amount: 1099,
+  });
+
+  const cardElement = elements.create(
+    'card',
+    {
+      style: {
+        base: {
+          fontFamily: 'Montserrat, sans-serif',
+          fontSize: '16px',
+          fontSmoothing: 'antialiased'
+        },
+        invalid: {
+          fontFamily: 'Montserrat, sans-serif',
+          iconColor: '#FF0000',
+          color: '#FF0000',
+        }
+      },
+      hidePostalCode: true
+    }
+  );
+
+  cardElement.mount('#card-element');
+
+  cardElement.addEventListener('change', (event) => {
+    disabled.value = false;
+    cardError.value = event.error ? event.error.message : '';
+  });
+});
 </script>
 
 <template>
   <app-layout title="Checkout">
+
     <div class="max-w-7xl mx-auto px-4 py-4 space-y-4 sm:px-6 md:flex md:space-y-0 md:space-x-4 lg:px-8">
 
       <div class="flex-1">
@@ -139,7 +181,7 @@ const disabled = true;
                   Credit Card
                 </label>
                 <div id="card-element"></div>
-                <p id="card-error" role="alert"></p>
+                <p id="card-error" role="alert">{{ cardError }}</p>
               </div>
             </div>
 
@@ -164,5 +206,27 @@ const disabled = true;
       </div>
 
     </div>
+
   </app-layout>
 </template>
+
+<style scoped>
+#card-error {
+  color: #ff0000;
+  text-align: center;
+  font-size: 16px;
+  line-height: 17px;
+  margin-top: 12px;
+}
+
+#card-element {
+  border-radius: 0.25rem;
+  padding: 12px;
+  --tw-border-opacity: 1;
+  border: 1px solid rgba(156, 163, 175, var(--tw-border-opacity));
+  height: 44px;
+  width: 100%;
+  --tw-bg-opacity: 1;
+  background-color: rgba(243, 244, 246, var(--tw-bg-opacity));
+}
+</style>

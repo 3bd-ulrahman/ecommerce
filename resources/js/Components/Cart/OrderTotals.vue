@@ -2,7 +2,7 @@
 import YellowButton from '@/Components/Buttons/YellowButton.vue';
 import GrayButton from '../Buttons/GrayButton.vue';
 import { router, useForm } from '@inertiajs/vue3';
-import { computed, reactive } from 'vue';
+import { computed } from 'vue';
 
 const props = defineProps({
   taxRate: Number,
@@ -66,7 +66,7 @@ const estimatedTax = computed(function () {
       </div>
 
       <div>
-        <YellowButton href="#" type="href" class="text-sm">
+        <YellowButton :href="route('checkout.index')" type="href" class="text-sm">
           Secure Checkout
         </YellowButton>
       </div>
@@ -114,7 +114,7 @@ const estimatedTax = computed(function () {
         </div>
 
         <div class="text-center mt-4">
-          <YellowButton href="#" type="href" class="text-sm">
+          <YellowButton :href="route('checkout.index')" type="href" class="text-sm">
             Secure Checkout
           </YellowButton>
         </div>

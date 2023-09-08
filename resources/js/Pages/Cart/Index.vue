@@ -48,7 +48,6 @@ const saveForLaterItemsCount = computed(() => {
         </div>
 
         <CartItems :items="cartItems" title="cart"/>
-        <cart-items :items="cartItems" title="cart"/>
 
         <div class="text-center text-red-600 text-2xl font-semibold mt-4 mb-2 md:text-left">
           <p v-if="saveForLaterItemsCount <= 0">You have saved no items for later!</p>
