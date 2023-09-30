@@ -1,4 +1,5 @@
 <script setup>
+import { Link } from '@inertiajs/vue3';
 import YellowButton from '@/Components/Buttons/YellowButton.vue';
 import GrayButton from '../Buttons/GrayButton.vue';
 import { router, useForm } from '@inertiajs/vue3';
@@ -10,6 +11,20 @@ const props = defineProps({
   couponCode: String,
   discount: Number,
   cartTotal: String
+});
+
+const estimatedTax = computed(function () {
+  let value = ((props.cartSubTotal - props.discount) * props.taxRate) / 100;
+
+  if (value < 0) {
+    value = 0;
+  }
+
+  return value;
+});
+
+const total = computed(() => {
+  return props.cartTotal - props.discount;
 });
 
 const form = useForm({
@@ -39,16 +54,6 @@ const removeCoupon = () => {
     }
   });
 }
-
-const estimatedTax = computed(function () {
-  let value = ((props.cartSubTotal - props.discount) * props.taxRate) / 100;
-
-  if (value < 0) {
-    value = 0;
-  }
-
-  return value;
-});
 </script>
 
 <template>
@@ -105,7 +110,7 @@ const estimatedTax = computed(function () {
         <div class=" bg-white px-4 py-2 mt-4">
           <div class="flex justify-between">
             <span>Order Total</span>
-            <span>${{ cartTotal }}</span>
+            <span>${{ total }}</span>
           </div>
           <div class="flex flex-col">
             <span>({{ taxRate }}% tax rate)</span>

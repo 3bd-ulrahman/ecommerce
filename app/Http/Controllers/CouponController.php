@@ -30,8 +30,7 @@ class CouponController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request->coupon_code);
-        $coupon = Coupon::where('code', $request->coupon_code)->first();
+        $coupon = Coupon::query()->where('code', $request->coupon_code)->first();
 
         if (! $coupon) {
             return to_route('cart.index')->withErrors([

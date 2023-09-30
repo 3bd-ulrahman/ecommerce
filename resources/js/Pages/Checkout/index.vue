@@ -1,17 +1,17 @@
 <script setup>
 import OrderTotals from '@/Components/Cart/OrderTotals.vue';
 import YellowButton from '@/Components/Buttons/YellowButton.vue';
-import { useForm } from '@inertiajs/vue3';
+import { router, useForm, usePage } from '@inertiajs/vue3';
 import states from '@/states.js';
 import { loadStripe } from '@stripe/stripe-js';
-import { onBeforeMount, ref } from 'vue';
+import { onBeforeMount, reactive, ref } from 'vue';
 
 const props = defineProps({
   cartSubTotal: String,
   taxRate: Number,
   couponCode: String,
   discount: Number,
-  cartTotal: String,
+  cartTotal: String
 });
 
 const form = useForm({
@@ -21,27 +21,28 @@ const form = useForm({
   city: '',
   state: '',
   zip_code: '',
-  name_on_card: ''
+  name_on_card: '',
+  paymentMethod: ''
 });
-
-const errors = [];
 
 const loading = false;
 
 const disabled = ref(true);
 
-const cardError = ref('');
+let cardElement;
+let stripe;
+let elements;
 
 onBeforeMount(async () => {
-  const stripe = await loadStripe(import.meta.env.VITE_STRIPE_KEY);
+  stripe = await loadStripe(import.meta.env.VITE_STRIPE_KEY);
 
-  const elements = stripe.elements({
+  elements = stripe.elements({
     mode: 'payment',
     currency: 'usd',
-    amount: 1099,
+    amount: parseInt(props.cartTotal)
   });
 
-  const cardElement = elements.create(
+  cardElement = elements.create(
     'card',
     {
       style: {
@@ -61,12 +62,35 @@ onBeforeMount(async () => {
   );
 
   cardElement.mount('#card-element');
-
-  cardElement.addEventListener('change', (event) => {
-    disabled.value = false;
-    cardError.value = event.error ? event.error.message : '';
-  });
 });
+
+const cardeError = ref('');
+async function processPayment() {
+  await stripe.createPaymentMethod({
+    elements,
+    params: {
+      billing_details: {
+        name: form.name,
+        email: form.email,
+        address: {
+          line1: form.address,
+          city: form.city,
+          state: form.state,
+          postal_code: form.zip_code
+        }
+      }
+    }
+  }).then((result) => {
+    form.paymentMethod = result.paymentMethod;
+    if (result.paymentMethod) {
+      router.post(route('checkout.store'), form, {
+        onBefore: (visit) => {
+          disabled.value = true;
+        }
+      });
+    }
+  });
+}
 </script>
 
 <template>
@@ -85,10 +109,9 @@ onBeforeMount(async () => {
                   Name
                 </label>
                 <input type="text" v-model="form.name" id="name" autofocus required
-                  class="appearance-none block w-full bg-gray-100 text-gray-700 border border-gray-400 rounded py-2 px-4"
-                >
-                <span class="flex justify-center text-md text-red-600 mt-2" v-if="errors.name">
-                  {{ errors.name[0] }}
+                  class="appearance-none block w-full bg-gray-100 text-gray-700 border border-gray-400 rounded py-2 px-4">
+                <span class="text-md text-red-600 mt-2" v-if="$page.props.errors.name">
+                  {{$page.props.errors.name}}
                 </span>
               </div>
             </div>
@@ -98,11 +121,11 @@ onBeforeMount(async () => {
                 <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="address">
                   Address
                 </label>
-                <input type="text"
+                <input type="text" v-model="form.address"
                   class="appearance-none block w-full bg-gray-100 text-gray-700 border border-gray-400 rounded py-2 px-4"
-                  id="address" required v-model="form.address">
-                <span class="flex justify-center text-md text-red-600 mt-2" v-if="errors.address">
-                  {{ errors.address[0] }}
+                  id="address" required>
+                <span class="text-md text-red-600 mt-2" v-if="$page.props.errors.address">
+                  {{$page.props.errors.address}}
                 </span>
               </div>
             </div>
@@ -112,11 +135,11 @@ onBeforeMount(async () => {
                 <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="city">
                   City
                 </label>
-                <input type="text"
+                <input type="text" v-model="form.city"
                   class="appearance-none block w-full bg-gray-100 text-gray-700 border border-gray-400 rounded py-2 px-4"
-                  id="city" required v-model="form.city">
-                <span class="flex justify-center text-md text-red-600 mt-2" v-if="errors.city">
-                  {{ errors.city[0] }}
+                  id="city" required>
+                <span class="text-md text-red-600 mt-2" v-if="$page.props.errors.city">
+                  {{$page.props.errors.city}}
                 </span>
               </div>
               <div class="md:w-1/2 px-3 mb-6">
@@ -125,16 +148,15 @@ onBeforeMount(async () => {
                 </label>
                 <div class="relative">
                   <select :value="form.state" v-model="form.state" id="state" required
-                    class="block appearance-none w-full bg-gray-100 text-gray-700 border border-gray-400 py-2 px-4 pr-8 rounded"
-                  >
+                    class="block appearance-none w-full bg-gray-100 text-gray-700 border border-gray-400 py-2 px-4 pr-8 rounded">
                     <option disabled value="">Please select one</option>
                     <option v-for="(state, index) in states" :key="index" :selected="state === form.state">
                       {{ state }}
                     </option>
                   </select>
                 </div>
-                <span v-if="errors.state" class="flex justify-center text-md text-red-600 mt-2">
-                  {{ errors.state[0] }}
+                <span class="text-md text-red-600 mt-2" v-if="$page.props.errors.state">
+                  {{$page.props.errors.state}}
                 </span>
               </div>
               <div class="md:w-1/2 px-3 mb-6 md:mb-0">
@@ -144,9 +166,9 @@ onBeforeMount(async () => {
                 <input type="text"
                   class="appearance-none block w-full bg-gray-100 text-gray-700 border border-gray-400 rounded py-2 px-4"
                   id="zip_code" required v-model="form.zip_code">
-                <span class="flex justify-center text-md text-red-600 mt-2" v-if="errors.zip_code">
-                  {{ errors.zip_code[0] }}
-                </span>
+                  <span class="text-md text-red-600 mt-2" v-if="$page.props.errors.zip_code">
+                    {{$page.props.errors.zip_code}}
+                  </span>
               </div>
             </div>
 
@@ -155,11 +177,11 @@ onBeforeMount(async () => {
                 <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="email">
                   E-mail
                 </label>
-                <input type="email"
+                <input type="email" v-model="form.email"
                   class="appearance-none block w-full bg-gray-100 text-gray-700 border border-gray-400 rounded py-2 px-4"
-                  id="email" required v-model="form.email">
-                <span class="flex justify-center text-md text-red-600 mt-2" v-if="errors.email">
-                  {{ errors.email[0] }}
+                  id="email">
+                <span class="text-md text-red-600 mt-2" v-if="$page.props.errors.email">
+                  {{$page.props.errors.email}}
                 </span>
               </div>
             </div>
@@ -169,11 +191,11 @@ onBeforeMount(async () => {
                 <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="name_on_card">
                   Name on Card
                 </label>
-                <input type="text"
+                <input type="text" v-model="form.name_on_card" required
                   class="appearance-none block w-full bg-gray-100 text-gray-700 border border-gray-400 rounded py-2 px-4"
-                  id="name_on_card" required v-model="form.name_on_card">
-                <span class="flex justify-center text-md text-red-600 mt-2" v-if="errors.name_on_card">
-                  {{ errors.name_on_card[0] }}
+                  id="name_on_card">
+                <span class="text-md text-red-600 mt-2" v-if="$page.props.errors.name_on_card">
+                  {{$page.props.errors.name_on_card}}
                 </span>
               </div>
               <div class="px-3 mb-6 w-full md:mb-0">
@@ -181,12 +203,18 @@ onBeforeMount(async () => {
                   Credit Card
                 </label>
                 <div id="card-element"></div>
-                <p id="card-error" role="alert">{{ cardError }}</p>
+                <span v-if="$page.props.errors.message" class="text-md text-red-600 mt-2">
+                  {{ $page.props.errors.message }}
+                </span>
+                <span class="text-md text-red-600 mt-2">
+                  {{ cardeError }}
+                </span>
               </div>
             </div>
 
             <div class="flex justify-center">
-              <YellowButton type="submit" class="text-sm" :class="{ 'opacity-50 cursor-not-allowed': disabled }"
+              <YellowButton type="submit" class="text-sm"
+                :class="{ 'opacity-50 cursor-not-allowed': disabled }"
                 :disabled="disabled"
               >
                 <Icon name="spinner" class="animate-spin h-5 w-5 fill-current" v-if="loading" />
@@ -200,9 +228,7 @@ onBeforeMount(async () => {
       </div>
 
       <div class="flex-1">
-        <OrderTotals
-          v-bind="props"
-        />
+        <OrderTotals v-bind="props" />
       </div>
 
     </div>

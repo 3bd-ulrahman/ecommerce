@@ -54,6 +54,7 @@ Route::delete('coupons', [CouponController::class, 'destroy'])->name('coupons.de
  * CHECKOUT
  */
 Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
+Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
 
 
 // Auth

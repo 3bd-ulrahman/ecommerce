@@ -129,7 +129,7 @@ const submit = function () {
               <select v-model="form.quantity" tabindex="1"
                 class="flex-1 w-full border bg-white rounded px-3 py-1 outline-none"
               >
-                <option v-for="(qty, index) in product.quantity" :key="index" :value="qty" :selected="qty === quantity">
+                <option v-for="(qty, index) in product.quantity" :key="index" :value="qty" :selected="qty === product.quantity">
                   {{ qty }}
                 </option>
               </select>

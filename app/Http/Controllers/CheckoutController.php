@@ -2,9 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CheckoutRequest;
+use App\Models\User;
 use App\Services\CartService;
+use Gloudemans\Shoppingcart\Facades\Cart;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 use Inertia\Inertia;
+use Stripe\Exception\CardException;
 
 class CheckoutController extends Controller
 {
@@ -27,9 +32,28 @@ class CheckoutController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(CheckoutRequest $request)
     {
-        //
+        try {
+            $coupon = Session::get('coupon.discount') ?? 0;
+
+            $total = (int) Cart::instance('default')->total() - $coupon;
+
+            $user = new User();
+
+            $user->charge($total * 100, $request->paymentMethod['id']);
+
+            return to_route('cart.index');
+        } catch (CardException $e) {
+            return to_route('checkout.index')->withErrors([
+                'message' => $e->getMessage()
+            ]);
+        }
+        catch (\Throwable $th) {
+            return to_route('checkout.index')->withErrors([
+                'message' => $th->getMessage()
+            ]);
+        }
     }
 
     /**
