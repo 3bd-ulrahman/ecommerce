@@ -66,7 +66,7 @@ class User extends Authenticatable
     /**
      * Relationships
      */
-    public function billingDetail(): HasOne
+    public function billingDetails(): HasOne
     {
         return $this->hasOne(BillingDetail::class, 'user_id');
     }

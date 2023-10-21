@@ -13,11 +13,17 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->call([
-            CategorySeeder::class,
-            ProductSeeder::class,
-            CouponSeeder::class
-        ]);
-        User::factory(10)->hasBillingDetail()->create();
+        // $this->call([
+        //     CategorySeeder::class,
+        //     ProductSeeder::class,
+        //     CouponSeeder::class
+        // ]);
+        // User::factory(10)->hasBillingDetail()->create();
+        // $this->call([
+        //     OrderSeeder::class
+        // ]);
+        User::factory(10)->create();
+        $users = User::query()->get('id');
+        (new OrderSeeder)->run(fake()->randomElement($users));
     }
 }

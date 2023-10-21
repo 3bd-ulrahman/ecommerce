@@ -34,13 +34,13 @@ class CheckoutController extends Controller
      */
     public function store(CheckoutRequest $request)
     {
+        $coupon = Session::get('coupon.discount') ?? 0;
+
+        $total = (int) Cart::instance('default')->total() - $coupon;
+
+        $user = new User();
+
         try {
-            $coupon = Session::get('coupon.discount') ?? 0;
-
-            $total = (int) Cart::instance('default')->total() - $coupon;
-
-            $user = new User();
-
             $user->charge($total * 100, $request->paymentMethod['id']);
 
             return to_route('cart.index');
@@ -48,8 +48,7 @@ class CheckoutController extends Controller
             return to_route('checkout.index')->withErrors([
                 'message' => $e->getMessage()
             ]);
-        }
-        catch (\Throwable $th) {
+        } catch (\Throwable $th) {
             return to_route('checkout.index')->withErrors([
                 'message' => $th->getMessage()
             ]);

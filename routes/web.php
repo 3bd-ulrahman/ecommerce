@@ -5,6 +5,7 @@ use App\Http\Controllers\Cart\MoveToCartController;
 use App\Http\Controllers\Cart\SaveForLaterController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\CouponController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ShopController;
 use App\Http\Controllers\WelcomeController;
 use Illuminate\Support\Facades\Route;
@@ -57,6 +58,12 @@ Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.in
 Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
 
 
+/**
+ * ORDERS
+ */
+Route::get('orders', [OrderController::class, 'index'])->name('orders.index');
+
+
 // Auth
 Route::middleware([
     'auth:sanctum',
@@ -66,4 +73,13 @@ Route::middleware([
     Route::get('/dashboard', function () {
         return Inertia::render('Dashboard');
     })->name('dashboard');
+});
+
+
+Route::get('test', function () {
+    // DB::connection()->enableQueryLog();
+    // return DB::getQueryLog();
+    return DB::table('users')->get('id');
+
+    // return fake()->randomElement($users);
 });

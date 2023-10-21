@@ -62,6 +62,15 @@ onBeforeMount(async () => {
   );
 
   cardElement.mount('#card-element');
+
+  cardElement.addEventListener('change', (event) => {
+    if (event.error) {
+      cardeError.value = event.error.message;
+      disabled.value = true;
+    } else {
+      disabled.value = false;
+    }
+  });
 });
 
 const cardeError = ref('');
