@@ -25,7 +25,7 @@ defineProps({
       </header>
 
       <!-- Page Content -->
-      <main>
+      <main style="min-height: 90vh;">
         <slot />
       </main>
 

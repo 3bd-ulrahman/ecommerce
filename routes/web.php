@@ -74,12 +74,3 @@ Route::middleware([
         return Inertia::render('Dashboard');
     })->name('dashboard');
 });
-
-
-Route::get('test', function () {
-    // DB::connection()->enableQueryLog();
-    // return DB::getQueryLog();
-    return DB::table('users')->get('id');
-
-    // return fake()->randomElement($users);
-});

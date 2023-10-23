@@ -34,10 +34,14 @@ const logout = () => {
               </Link>
 
               <template v-else>
-                <Link :href="route('register')" class="hover:text-yellow-500 transition">
+                <Link :href="route('register')" v-if="!$page.props.auth.user"
+                  class="hover:text-yellow-500 transition"
+                >
                   Register
                 </Link>
-                <Link :href="route('login')" class="hover:text-yellow-500 transition">
+                <Link :href="route('login')" v-if="!$page.props.auth.user"
+                  class="hover:text-yellow-500 transition"
+                >
                   Login
                 </Link>
               </template>
@@ -46,7 +50,7 @@ const logout = () => {
                 Shop
               </Link>
 
-              <form method="POST" @submit.prevent="logout" v-if="$page.props.user">
+              <form method="POST" @submit.prevent="logout" v-if="$page.props.auth.user">
                 <button type="submit" class="hover:text-yellow-500 transition">
                   Log Out
                 </button>
