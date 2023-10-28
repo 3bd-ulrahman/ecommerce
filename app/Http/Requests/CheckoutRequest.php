@@ -22,8 +22,6 @@ class CheckoutRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => ['required', 'min:8', 'max:100', 'email', 'unique:users'],
-            'name' => ['required', 'string', 'min:3', 'max:100'],
             'name_on_card' => ['required', 'string', 'min:3', 'max:100'],
             'password' => ['sometimes', 'required', 'min:8', 'max:20'],
             'address' => ['required', 'string', 'min:3', 'max:50'],

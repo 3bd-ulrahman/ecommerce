@@ -35,10 +35,29 @@ class CheckoutController extends Controller
     public function store(CheckoutRequest $request)
     {
         $coupon = Session::get('coupon.discount') ?? 0;
-
+        $subtotal = (int) Cart::instance('default')->subtotal();
+        $tax = config('cart.tax');
         $total = (int) Cart::instance('default')->total() - $coupon;
 
-        $user = new User();
+        $data = Cart::content()->mapWithKeys(function ($item) {
+            return [$item->id => [
+                'price' => $item->price,
+                'quantity' => $item->qty,
+            ]];
+        })->toArray();
+
+        $user = auth()->user();
+        $order = $user->orders()->create([
+            'address' => $request->address,
+            'city' => $request->city,
+            'state' => $request->state,
+            'zip_code' => $request->zip_code,
+            'subtotal' => $subtotal,
+            'tax' => $tax,
+            'total' => $total
+        ]);
+
+        $order->products()->sync($data);
 
         try {
             $user->charge($total * 100, $request->paymentMethod['id']);

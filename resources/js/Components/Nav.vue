@@ -94,12 +94,12 @@ const logout = () => {
       </template>
       <template v-else>
         <div class="pt-2 pb-3 space-y-1">
-          <ResponsiveNavLink :href="route('register')">
+          <ResponsiveNavLink :href="route('register')" v-if="!$page.props.auth.user">
             Register
           </ResponsiveNavLink>
         </div>
         <div class="pt-2 pb-3 space-y-1">
-          <ResponsiveNavLink :href="route('login')">
+          <ResponsiveNavLink :href="route('login')" v-if="!$page.props.auth.user">
             Login
           </ResponsiveNavLink>
         </div>
@@ -123,7 +123,7 @@ const logout = () => {
       </div>
 
       <!-- Responsive Settings Options -->
-      <div v-if="$page.props.user" class="pt-4 pb-1 border-t border-gray-200">
+      <div v-if="$page.props.auth.user" class="pt-4 pb-1 border-t border-gray-200">
         <div class="mt-3 space-y-1">
           <!-- Authentication -->
           <form method="POST" @submit.prevent="logout">
