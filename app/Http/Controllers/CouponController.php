@@ -46,8 +46,6 @@ class CouponController extends Controller
             'code' => $coupon->code,
             'discount' => $discount
         ]);
-
-        return to_route('cart.index');
     }
 
     /**

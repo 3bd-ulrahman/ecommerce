@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Services\CartService;
 use Gloudemans\Shoppingcart\Facades\Cart;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Inertia\Inertia;
 use Stripe\Exception\CardException;
@@ -46,6 +47,7 @@ class CheckoutController extends Controller
             ]];
         })->toArray();
 
+        DB::beginTransaction();
         $user = auth()->user();
         $order = $user->orders()->create([
             'address' => $request->address,
@@ -62,12 +64,18 @@ class CheckoutController extends Controller
         try {
             $user->charge($total * 100, $request->paymentMethod['id']);
 
+            DB::commit();
+
+            Session::forget(['cart', 'coupon']);
+
             return to_route('cart.index');
         } catch (CardException $e) {
+            DB::rollback();
             return to_route('checkout.index')->withErrors([
                 'message' => $e->getMessage()
             ]);
         } catch (\Throwable $th) {
+            DB::rollback();
             return to_route('checkout.index')->withErrors([
                 'message' => $th->getMessage()
             ]);
