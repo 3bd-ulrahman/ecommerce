@@ -60,7 +60,13 @@ const saveForLaterItemsCount = computed(() => {
 
       <div class="flex-1">
         <OrderTotals
-          v-bind="props"
+          v-bind="{
+            taxRate,
+            cartSubTotal,
+            couponCode,
+            discount,
+            cartTotal
+          }"
         />
       </div>
 

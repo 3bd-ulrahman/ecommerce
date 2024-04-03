@@ -43,7 +43,12 @@ class HandleInertiaRequests extends Middleware
                 'cartCount' => Cart::instance('default')->count(),
             ],
             'cartCount' => Cart::instance('default')->count(),
-            'quote' => Inspiring::quote()
+            'quote' => Inspiring::quote(),
+            'flash' => [
+                'success' => session('success'),
+                'warning' => session('warning'),
+                'error' => session('error')
+            ]
         ]);
     }
 }

@@ -13,6 +13,7 @@ class Order extends Model
 
     protected $fillable = [
         'user_id',
+        'reference_code',
         'address',
         'city',
         'state',
@@ -22,12 +23,11 @@ class Order extends Model
         'total'
     ];
 
-    /**
-     * Relationships
-     */
+    // Relationships
     public function products()
     {
-        return $this->belongsToMany(Product::class, 'order_product', 'order_id', 'product_id');
+        return $this->belongsToMany(Product::class, 'order_product', 'order_id', 'product_id')
+            ->withPivot('quantity');
     }
 
     public function user()

@@ -1,11 +1,28 @@
 <script setup>
-import { Head } from '@inertiajs/vue3';
+import { Head, usePage } from '@inertiajs/vue3';
 import Nav from '@/Components/Nav.vue';
 import Footer from '@/Components/Footer.vue';
 
 defineProps({
   title: String
 });
+
+if (usePage().props.flash.success) {
+  Toast.fire({
+    icon: 'success',
+    title: usePage().props.flash.success
+  });
+} else if (usePage().props.flash.warning) {
+  Toast.fire({
+    icon: 'warning',
+    title: usePage().props.flash.warning
+  });
+}  else if (usePage().props.flash.error) {
+  Toast.fire({
+    icon: 'error',
+    title: usePage().props.flash.error
+  });
+}
 </script>
 
 <template>

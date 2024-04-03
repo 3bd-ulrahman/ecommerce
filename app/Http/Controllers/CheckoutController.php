@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CheckoutRequest;
-use App\Models\User;
 use App\Services\CartService;
 use Gloudemans\Shoppingcart\Facades\Cart;
 use Illuminate\Http\Request;
@@ -11,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Inertia\Inertia;
 use Stripe\Exception\CardException;
+use Illuminate\Support\Str;
 
 class CheckoutController extends Controller
 {
@@ -19,7 +19,13 @@ class CheckoutController extends Controller
      */
     public function index(CartService $cartService)
     {
-        return Inertia::render('Checkout/index', $cartService->cartValues()->toArray());
+        if (Cart::instance('default')->count() === 0) {
+            return to_route('shop.index')->with([
+                'error' => 'Your cart is empty',
+            ]);
+        }
+
+        return Inertia::render('Checkout/Index', $cartService->cartValues()->toArray());
     }
 
     /**
@@ -35,21 +41,30 @@ class CheckoutController extends Controller
      */
     public function store(CheckoutRequest $request)
     {
-        $coupon = Session::get('coupon.discount') ?? 0;
+        if (Cart::instance('default')->count() === 0) {
+            return to_route('shop.index')->with([
+                'erorr' => 'Your cart is empty',
+            ]);
+        }
+
+        $discount = Session::get('coupon.discount') ?? 0;
         $subtotal = (int) Cart::instance('default')->subtotal();
         $tax = config('cart.tax');
-        $total = (int) Cart::instance('default')->total() - $coupon;
+        $total = (int) Cart::instance('default')->total() - $discount;
 
         $data = Cart::content()->mapWithKeys(function ($item) {
-            return [$item->id => [
-                'price' => $item->price,
-                'quantity' => $item->qty,
-            ]];
+            return [
+                $item->id => [
+                    'price' => $item->price,
+                    'quantity' => $item->qty,
+                ]
+            ];
         })->toArray();
 
         DB::beginTransaction();
         $user = auth()->user();
         $order = $user->orders()->create([
+            'reference_code' => Str::uuid(),
             'address' => $request->address,
             'city' => $request->city,
             'state' => $request->state,
@@ -68,7 +83,7 @@ class CheckoutController extends Controller
 
             Session::forget(['cart', 'coupon']);
 
-            return to_route('cart.index');
+            return Inertia::render('Checkout/Thanks', compact('order', 'discount'));
         } catch (CardException $e) {
             DB::rollback();
             return to_route('checkout.index')->withErrors([

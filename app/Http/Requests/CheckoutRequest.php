@@ -23,6 +23,7 @@ class CheckoutRequest extends FormRequest
     {
         return [
             'name_on_card' => ['required', 'string', 'min:3', 'max:100'],
+            'phone' => ['nullable'],
             'password' => ['sometimes', 'required', 'min:8', 'max:20'],
             'address' => ['required', 'string', 'min:3', 'max:50'],
             'city' => ['required', 'string', 'min:2', 'max:20'],

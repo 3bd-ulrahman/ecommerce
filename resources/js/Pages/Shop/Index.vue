@@ -2,6 +2,7 @@
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { Link } from '@inertiajs/vue3';
 import SecondaryHeader from '@/Components/SecondaryHeader.vue';
+import NoItemsFound from '@/Components/NoItemsFound.vue';
 
 const props = defineProps({
   products: Object,
@@ -12,10 +13,9 @@ const category = props.categories.find(category => category.slug === route().par
 </script>
 
 <template>
-  <app-layout :title="`Shop ${ category.name }`">
+  <AppLayout :title="`Shop ${ category.name }`">
 
     <SecondaryHeader>
-
       <template #breadcrumbs>
         <Icon name="angle-right" class="w-4 h-4 fill-current" />
         <span>Shop {{ category.name }}</span>
@@ -24,7 +24,6 @@ const category = props.categories.find(category => category.slug === route().par
       <template #search>
         search
       </template>
-
     </SecondaryHeader>
 
     <div class="flex">
@@ -80,5 +79,5 @@ const category = props.categories.find(category => category.slug === route().par
 
     </div>
 
-  </app-layout>
+  </AppLayout>
 </template>
