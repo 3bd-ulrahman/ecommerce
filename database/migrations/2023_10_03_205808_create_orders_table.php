@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('address');
             $table->string('city', 50);
             $table->string('state', 50);
-            $table->integer('zip_code')->nullable();
+            $table->string('zip_code', 10)->nullable();
             $table->integer('subtotal');
             $table->smallInteger('tax');
             $table->integer('total');

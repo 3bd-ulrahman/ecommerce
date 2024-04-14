@@ -40,7 +40,6 @@ createInertiaApp({
             .use(plugin)
             .use(ZiggyVue, Ziggy)
             .component('Icon', Icons)
-            .component('AppLayout', AppLayout)
             .mount(el);
     },
     progress: {

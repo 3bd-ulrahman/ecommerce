@@ -39,9 +39,6 @@ class HandleInertiaRequests extends Middleware
     public function share(Request $request): array
     {
         return array_merge(parent::share($request), [
-            'props' => [
-                'cartCount' => Cart::instance('default')->count(),
-            ],
             'cartCount' => Cart::instance('default')->count(),
             'quote' => Inspiring::quote(),
             'flash' => [

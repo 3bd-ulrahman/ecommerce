@@ -23,6 +23,10 @@ class Order extends Model
         'total'
     ];
 
+    protected $casts = [
+      'created_at' => 'datetime:j/n/Y',
+    ];
+
     // Relationships
     public function products()
     {

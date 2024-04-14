@@ -17,12 +17,9 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             CategorySeeder::class,
             ProductSeeder::class,
+            OrderSeeder::class,
+            OrderProductSeeder::class,
             CouponSeeder::class
         ]);
-
-        // User::factory(10)->hasBillingDetail()->create();
-        // $this->call([
-        //     OrderSeeder::class
-        // ]);
     }
 }

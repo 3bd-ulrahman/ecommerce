@@ -64,14 +64,7 @@ class User extends Authenticatable
     ];
 
 
-    /**
-     * Relationships
-     */
-    public function billingDetails(): HasOne
-    {
-        return $this->hasOne(BillingDetail::class, 'user_id');
-    }
-
+    // Relationships
     public function orders(): HasMany
     {
         return $this->hasMany(Order::class,'user_id', 'id');

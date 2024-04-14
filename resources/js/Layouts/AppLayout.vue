@@ -7,20 +7,12 @@ defineProps({
   title: String
 });
 
-if (usePage().props.flash.success) {
+const flashMessage = Object.entries(usePage().props.flash).find(([key, value]) => value !== null);
+
+if (flashMessage) {
   Toast.fire({
-    icon: 'success',
-    title: usePage().props.flash.success
-  });
-} else if (usePage().props.flash.warning) {
-  Toast.fire({
-    icon: 'warning',
-    title: usePage().props.flash.warning
-  });
-}  else if (usePage().props.flash.error) {
-  Toast.fire({
-    icon: 'error',
-    title: usePage().props.flash.error
+    icon: flashMessage[0],
+    title: flashMessage[1]
   });
 }
 </script>

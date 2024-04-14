@@ -12,6 +12,13 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 
+/**
+ * Constant
+ */
+define('PAGINATION', 10);
+
+
+
 Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
 
 
@@ -53,7 +60,10 @@ Route::middleware('auth')->group(function () {
 /**
  * ORDERS
  */
-Route::get('orders', [OrderController::class, 'index'])->name('orders.index');
+Route::middleware('auth')->group(function () {
+    Route::get('orders', [OrderController::class, 'index'])->name('orders.index');
+    Route::get('orders/{order}', [OrderController::class, 'show'])->name('orders.show');
+});
 
 // Auth
 Route::middleware([

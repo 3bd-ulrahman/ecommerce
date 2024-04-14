@@ -12,14 +12,18 @@ class OrderSeeder extends Seeder
     /**
      * Run the database seeds.
      */
-    public function run($user_id): void
+    public function run(): void
     {
         $orders = [];
 
-        for ($i=0; $i < 10; $i++) {
+        for ($i=0; $i < 50; $i++) {
             array_push($orders, [
-                'user_id' => $user_id,
+                'user_id' => fake()->numberBetween(1, 10),
                 'reference_code' => Str::uuid(),
+                'address' => fake()->address(),
+                'city' => fake()->city(),
+                'state' => fake()->state(),
+                'zip_code' => fake()->postcode(),
                 'subtotal' => fake()->randomNumber(5),
                 'tax' => 20,
                 'total' => fake()->randomNumber(5)

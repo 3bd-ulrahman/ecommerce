@@ -13,7 +13,12 @@ class OrderController extends Controller
      */
     public function index()
     {
-        return Inertia::render('Orders/Index');
+        $orders = Order::query()->where('user_id', auth()->user()->id)
+            ->with('products')
+            ->latest()
+            ->paginate(PAGINATION);
+
+        return Inertia::render('Orders/Index', compact('orders'));
     }
 
     /**
