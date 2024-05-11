@@ -19,9 +19,9 @@ return new class extends Migration
             $table->string('city', 50);
             $table->string('state', 50);
             $table->string('zip_code', 10)->nullable();
-            $table->integer('subtotal');
+            $table->decimal('sub_total');
             $table->smallInteger('tax');
-            $table->integer('total');
+            $table->decimal('total');
             $table->timestamps();
         });
     }

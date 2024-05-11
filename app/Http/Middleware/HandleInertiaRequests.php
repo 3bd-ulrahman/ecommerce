@@ -39,13 +39,17 @@ class HandleInertiaRequests extends Middleware
     public function share(Request $request): array
     {
         return array_merge(parent::share($request), [
+            // Synchronously...
             'cartCount' => Cart::instance('default')->count(),
             'quote' => Inspiring::quote(),
             'flash' => [
                 'success' => session('success'),
                 'warning' => session('warning'),
                 'error' => session('error')
-            ]
+            ],
+
+            // Lazily...
+            'csrf_token' => fn () => csrf_token(),
         ]);
     }
 }

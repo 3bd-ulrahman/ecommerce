@@ -69,7 +69,7 @@ class CheckoutController extends Controller
             'city' => $request->city,
             'state' => $request->state,
             'zip_code' => $request->zip_code,
-            'subtotal' => $subtotal,
+            'sub_total' => $subtotal,
             'tax' => $tax,
             'total' => $total
         ]);

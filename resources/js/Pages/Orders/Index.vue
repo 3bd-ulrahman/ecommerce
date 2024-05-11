@@ -3,7 +3,6 @@ import UserLayout from '@/Layouts/UserLayout.vue';
 import NoItemsFound from '@/Components/NoItemsFound.vue';
 import YellowButton from '@/Components/Buttons/YellowButton.vue';
 import { Link } from '@inertiajs/vue3';
-import { useFormatCurrency } from '@/composables/formatCurrency';
 
 const props = defineProps({
   orders: Object
@@ -31,7 +30,7 @@ const props = defineProps({
             <div class="flex flex-col text-right">
               <span>Order # {{ order.reference_code }}</span>
               <div>
-                <YellowButton as="href" :href="route('orders.show', order.reference_code)" class="py-1">
+                <YellowButton type="href" :href="route('orders.show', order.reference_code)" class="py-1">
                   <span>View Invoice</span>
                 </YellowButton>
               </div>

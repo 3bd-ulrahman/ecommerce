@@ -18,7 +18,7 @@ class Order extends Model
         'city',
         'state',
         'zip_code',
-        'subtotal',
+        'sub_total',
         'tax',
         'total'
     ];
@@ -31,7 +31,7 @@ class Order extends Model
     public function products()
     {
         return $this->belongsToMany(Product::class, 'order_product', 'order_id', 'product_id')
-            ->withPivot('quantity');
+            ->withPivot(['quantity', 'price']);
     }
 
     public function user()

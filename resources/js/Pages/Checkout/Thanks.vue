@@ -1,4 +1,5 @@
 <script setup>
+import AppLayout from '@/Layouts/AppLayout.vue';
 import { Link } from '@inertiajs/vue3';
 import YellowButton from '@/Components/Buttons/YellowButton.vue';
 import { usePage } from '@inertiajs/vue3';

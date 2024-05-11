@@ -1,4 +1,5 @@
 <script setup>
+import AppLayout from '@/Layouts/AppLayout.vue';
 import { Link } from '@inertiajs/vue3';
 import OrderTotals from '@/Components/Cart/OrderTotals.vue';
 import CartItems from '@/Components/Cart/CartItems.vue';
@@ -29,7 +30,7 @@ const saveForLaterItemsCount = computed(() => {
 </script>
 
 <template>
-  <app-layout title="Cart">
+  <AppLayout title="Cart">
 
     <div class="max-w-7xl mx-auto p-4 space-y-4 sm:px-6 md:flex md:space-y-0 md:space-x-4 lg:px-8">
 
@@ -72,5 +73,5 @@ const saveForLaterItemsCount = computed(() => {
 
     </div>
 
-  </app-layout>
+  </AppLayout>
 </template>

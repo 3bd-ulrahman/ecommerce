@@ -5,7 +5,6 @@ use App\Http\Controllers\Cart\MoveToCartController;
 use App\Http\Controllers\Cart\SaveForLaterController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\CouponController;
-use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ShopController;
 use App\Http\Controllers\WelcomeController;
 use Illuminate\Support\Facades\Route;
@@ -44,8 +43,10 @@ Route::post('cart/move-to-cart/{product}', MoveToCartController::class)->name('c
 /**
  * COUPONS
  */
-Route::post('coupons' , [CouponController::class, 'store'])->name('coupons.store');
-Route::delete('coupons', [CouponController::class, 'destroy'])->name('coupons.destroy');
+Route::middleware('auth')->group(function () {
+    Route::post('coupons' , [CouponController::class, 'store'])->name('coupons.store');
+    Route::delete('coupons', [CouponController::class, 'destroy'])->name('coupons.destroy');
+});
 
 
 /**
@@ -61,16 +62,20 @@ Route::middleware('auth')->group(function () {
  * ORDERS
  */
 Route::middleware('auth')->group(function () {
-    Route::get('orders', [OrderController::class, 'index'])->name('orders.index');
-    Route::get('orders/{order}', [OrderController::class, 'show'])->name('orders.show');
+    Route::get('orders', [\App\Http\Controllers\OrderController::class, 'index'])->name('orders.index');
+    Route::get('orders/{order:reference_code}', [\App\Http\Controllers\OrderController::class, 'show'])->name('orders.show');
 });
 
+
+/**
+ * INVOICES
+ */
+Route::middleware('auth')
+    ->post('invoices/{order:reference_code}', \App\Http\Controllers\InvoiceController::class)
+    ->name('invoices.show');
+
 // Auth
-Route::middleware([
-    'auth:sanctum',
-    config('jetstream.auth_session'),
-    'verified',
-])->group(function () {
+Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified',])->group(function () {
     Route::get('/dashboard', function () {
         return Inertia::render('Dashboard');
     })->name('dashboard');
