@@ -33,7 +33,7 @@ class CouponController extends Controller
         $coupon = Coupon::query()->where('code', $request->coupon_code)->first();
 
         if (! $coupon) {
-            return to_route('cart.index')->withErrors([
+            return back()->withErrors([
                 'message' => 'We couldn`t find your coupon. Please try again!'
             ]);
         }

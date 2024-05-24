@@ -2,19 +2,19 @@
 import { Head, usePage } from '@inertiajs/vue3';
 import Nav from '@/Components/Nav.vue';
 import Footer from '@/Components/Footer.vue';
+import { watch } from 'vue';
 
 defineProps({
   title: String
 });
 
-const flashMessage = Object.entries(usePage().props.flash).find(([key, value]) => value !== null);
-
-if (flashMessage) {
-  Toast.fire({
+watch(() => usePage().props.flash, () => {
+  const flashMessage = Object.entries(usePage().props.flash).find(([key, value]) => value !== null);
+  return Toast.fire({
     icon: flashMessage[0],
     title: flashMessage[1]
   });
-}
+});
 </script>
 
 <template>

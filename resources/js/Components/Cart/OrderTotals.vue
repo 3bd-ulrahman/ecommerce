@@ -3,7 +3,7 @@ import { Link } from '@inertiajs/vue3';
 import YellowButton from '@/Components/Buttons/YellowButton.vue';
 import GrayButton from '../Buttons/GrayButton.vue';
 import { router, useForm } from '@inertiajs/vue3';
-import { computed } from 'vue';
+import { computed, defineModel } from 'vue';
 
 const props = defineProps({
   taxRate: Number,
@@ -12,6 +12,8 @@ const props = defineProps({
   discount: Number,
   cartTotal: String
 });
+
+const coupon_code = defineModel('coupon_code');
 
 const estimatedTax = computed(function () {
   let value = ((props.cartSubTotal - props.discount) * props.taxRate) / 100;
@@ -140,7 +142,7 @@ const removeCoupon = () => {
         <div>
 
           <div class="bg-white p-4 mt-4">
-            <input type="text" class="w-full" placeholder="Enter Promo Code Here" v-model="form.coupon_code">
+            <input type="text" class="w-full" placeholder="Enter Promo Code Here" v-model="coupon_code" @input="form.coupon_code = $event.target.value">
             <span v-if="$page.props.errors.message" class="text-md text-red-600 mt-2">
               {{ $page.props.errors.message }}
             </span>

@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>{{ $invoice->name }}</title>
+  <title>{{ config('app.name') . '_' . $invoice->reference_code }}</title>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <style>{{ file_get_contents('assets/pdf.css') }}</style>
+  <style>{{ file_get_contents(public_path('assets/pdf.css')) }}</style>
 </head>
 <body>
   {{-- Header --}}

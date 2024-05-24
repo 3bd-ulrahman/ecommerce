@@ -2,10 +2,10 @@
 import AppLayout from '@/Layouts/AppLayout.vue';
 import OrderTotals from '@/Components/Cart/OrderTotals.vue';
 import YellowButton from '@/Components/Buttons/YellowButton.vue';
-import { router, useForm, usePage } from '@inertiajs/vue3';
+import { router, useForm } from '@inertiajs/vue3';
 import states from '@/states.js';
 import { loadStripe } from '@stripe/stripe-js';
-import { nextTick, onBeforeMount, reactive, ref } from 'vue';
+import { nextTick, onBeforeMount, ref } from 'vue';
 
 const props = defineProps({
   cartSubTotal: String,
@@ -23,12 +23,12 @@ const form = useForm({
   state: '',
   zip_code: '',
   name_on_card: '',
-  paymentMethod: ''
+  paymentMethod: '',
+  coupon_code: ''
 });
 
 const loading = false;
 const disabled = ref(true);
-const isConfirmed = ref(false);
 
 let cardElement;
 let stripe;
@@ -103,7 +103,7 @@ async function processPayment() {
       router.post(route('checkout.store'), form, {
         onBefore: (visit) => {
           disabled.value = true;
-        }
+        },
       });
     }
   });
@@ -215,6 +215,7 @@ async function processPayment() {
                   {{ $page.props.errors.name_on_card }}
                 </span>
               </div>
+
               <div class="px-3 mb-6 w-full md:mb-0">
                 <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="card_element">
                   Credit Card
@@ -231,7 +232,8 @@ async function processPayment() {
 
             <div class="flex justify-center">
               <YellowButton type="submit" class="text-sm" :class="{ 'opacity-50 cursor-not-allowed': disabled }"
-                :disabled="disabled">
+                :disabled="disabled"
+              >
                 <Icon name="spinner" class="animate-spin h-5 w-5 fill-current" v-if="loading" />
                 <span v-else>Pay now</span>
               </YellowButton>
@@ -243,7 +245,7 @@ async function processPayment() {
       </div>
 
       <div class="flex-1">
-        <OrderTotals v-bind="props" />
+        <OrderTotals v-bind="props" v-model:coupon_code="form.coupon_code"/>
       </div>
 
     </div>

@@ -67,7 +67,7 @@ console.log(props.order.products);
           <div class="flex flex-col">
             <div class="flex justify-end space-x-2">
               <span>Subtotal:</span>
-              <span>{{ $filters.formatCurrency(order.subtotal) }}</span>
+              <span>{{ $filters.formatCurrency(order.sub_total) }}</span>
             </div>
             <div class="flex justify-end space-x-2" v-if="discount">
               <span>-{{ $filters.formatCurrency(discount) }}</span>
@@ -89,6 +89,7 @@ console.log(props.order.products);
 </template>
 
 <style scoped>
+/** hide all page excpet for print area */
 @media print {
   body *:not(#print-container, #print-container *) {
     visibility: hidden;

@@ -3,12 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CheckoutRequest;
+use App\Mail\OrderReceived;
 use App\Services\CartService;
 use Gloudemans\Shoppingcart\Facades\Cart;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
 use Inertia\Inertia;
+use Mccarlosen\LaravelMpdf\Facades\LaravelMpdf;
 use Stripe\Exception\CardException;
 use Illuminate\Support\Str;
 
@@ -43,7 +46,13 @@ class CheckoutController extends Controller
     {
         if (Cart::instance('default')->count() === 0) {
             return to_route('shop.index')->with([
-                'erorr' => 'Your cart is empty',
+                'error' => 'Your cart is empty',
+            ]);
+        }
+
+        if ($request->coupon_code != Session::get('coupon.code')) {
+            return to_route('checkout.index')->with([
+                'error' => 'Coupon code is invalid',
             ]);
         }
 
@@ -83,7 +92,19 @@ class CheckoutController extends Controller
 
             Session::forget(['cart', 'coupon']);
 
-            return Inertia::render('Checkout/Thanks', compact('order', 'discount'));
+            $pdf = LaravelMpdf::loadView('pdf.invoice', ['invoice' => $order]);
+
+            Mail::to($user->email)->queue(
+                new OrderReceived(
+                    $order,
+                    base64_encode($pdf->output())
+                )
+            );
+
+            return Inertia::render('Checkout/Thanks', [
+                'order' => $order->load('products'),
+                'discount' => $discount
+            ]);
         } catch (CardException $e) {
             DB::rollback();
             return to_route('checkout.index')->withErrors([
