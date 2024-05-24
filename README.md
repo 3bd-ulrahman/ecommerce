@@ -12,3 +12,4 @@
 -   Shopping cart
 -   Checkout with stripe
 -   Export invoice in pdf
+-   Emailing invoice pdf
