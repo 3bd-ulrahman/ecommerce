@@ -32,8 +32,8 @@ const count = computed(() => {
   });
 };
 
-const updateCartQuantity = (rowId, quantity) => {
-  router.patch(route('cart.update', rowId), {quantity: quantity}, {
+const updateCartQuantity = (id, quantity) => {
+  router.patch(route('cart.update', id), {quantity: quantity}, {
     preserveScroll: true,
     onSuccess: page => {
       Toast.fire({
@@ -44,8 +44,8 @@ const updateCartQuantity = (rowId, quantity) => {
   });
 }
 
-const removeFromCart = (rowId) => {
-  router.delete(route('cart.destroy', rowId), {
+const removeFromCart = (id) => {
+  router.delete(route('cart.destroy', id), {
     preserveScroll: true,
     onSuccess: page => {
       Toast.fire({
@@ -61,7 +61,7 @@ const removeFromCart = (rowId) => {
  * Save for later
 */
 const saveForLater = (rowId) => {
-  router.post(route('cart.save-for-later.store', rowId), null, {
+  router.post(route('cart.wishlist.store', rowId), null, {
     preserveScroll: true,
     onSuccess: page => {
       Toast.fire({
@@ -73,7 +73,7 @@ const saveForLater = (rowId) => {
 };
 
 const updateSaveForLaterQuantity = (rowId, quantity) => {
-  router.patch(route('cart.save-for-later.update', rowId), {quantity: quantity}, {
+  router.patch(route('cart.wishlist.update', rowId), {quantity: quantity}, {
     preserveScroll: true,
     onSuccess: page => {
       Toast.fire({
@@ -85,7 +85,7 @@ const updateSaveForLaterQuantity = (rowId, quantity) => {
 }
 
 const removeFromSaveForLater = (rowId) => {
-  router.delete(route('cart.save-for-later.destroy', rowId), {
+  router.delete(route('cart.wishlist.destroy', rowId), {
     preserveScroll: true,
     onSuccess: page => {
       Toast.fire({
@@ -110,34 +110,33 @@ const removeFromSaveForLater = (rowId) => {
   <div v-for="(item, index) in items" :key="index" class="flex justify-between border-b border-black py-2">
 
     <div class="flex space-x-4 w-1/2">
-
-      <Link :href="route('shop.show', item.options.slug)" class="flex flex-1">
-        <img :src="item.options.image" class="object-cover" :alt="item.name">
+      <Link :href="route('shop.show', item.slug)" class="flex flex-1">
+        <img :src="item.image" class="object-cover" :alt="item.name">
       </Link>
 
       <div class="flex flex-1 flex-col justify-between">
 
-        <Link :href="route('shop.show', item.options.slug)" class="flex flex-col">
-        <span>{{ item.name }}</span>
-        <span>{{ item.options.details.substring(0, 10) + '...' }}</span>
+        <Link :href="route('shop.show', item.slug)" class="flex flex-col">
+          <span>{{ item.name }}</span>
+          <span>{{ item.details.substring(0, 10) + '...' }}</span>
         </Link>
 
-        <div v-if="title === 'cart'" class="flex flex-col mt-4">
-          <form @submit.prevent="removeFromCart(item.rowId)">
+        <div v-if="title === 'shopping'" class="flex flex-col mt-4">
+          <form @submit.prevent="removeFromCart(item.id)">
             <button type="submit" class="hover:text-yellow-500">
               Remove
             </button>
           </form>
 
-          <form @submit.prevent="saveForLater(item.rowId)">
+          <form @submit.prevent="saveForLater(item.id)">
             <button type="submit" class="hover:text-yellow-500">
               Save for later
             </button>
           </form>
         </div>
 
-        <div  v-if="title === 'saveForLater'" class="flex flex-col mt-4">
-          <form @submit.prevent="removeFromSaveForLater(item.rowId)">
+        <div  v-if="title === 'wishlist'" class="flex flex-col mt-4">
+          <form @submit.prevent="removeFromSaveForLater(item.id)">
             <button type="submit" class="hover:text-yellow-500">
               Remove
             </button>
@@ -151,25 +150,27 @@ const removeFromSaveForLater = (rowId) => {
         </div>
 
       </div>
-
     </div>
 
     <div class="flex justify-between w-1/2">
       <div class="flex-1 text-center">
-        <select v-if="title === 'cart'" @change="updateCartQuantity(item.rowId, $event.target.value)"
+        <!-- <h1>{{ item }}</h1> -->
+        <select v-if="title === 'shopping'" @change="updateCartQuantity(item.id, $event.target.value)"
           class="border bg-white rounded outline-none py-0" tabindex="1">
-          <option :value="qty" :selected="qty === item.qty" v-for="(qty, index) in item.options.total_quantity"
+          <option :value="qty" :selected="qty === item.quantity" v-for="(qty, index) in item.quantity"
             :key="index">
             {{ qty }}
           </option>
         </select>
-        <select v-if="title === 'saveForLater'" @change="updateSaveForLaterQuantity(item.rowId, $event.target.value)"
+
+        <select v-if="title === 'wishlist'" @change="updateSaveForLaterQuantity(item.id, $event.target.value)"
           class="border bg-white rounded outline-none py-0" tabindex="1">
-          <option :value="qty" :selected="qty === item.qty" v-for="(qty, index) in item.options.total_quantity"
+          <option :value="qty" :selected="qty === item.quantity" v-for="(qty, index) in item.quantity"
             :key="index">
             {{ qty }}
           </option>
         </select>
+
       </div>
       <span class="flex-1 text-right">
         {{ $filters.formatCurrency(item.price) }}

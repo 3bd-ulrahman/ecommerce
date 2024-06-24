@@ -6,10 +6,9 @@ import CartItems from '@/Components/Cart/CartItems.vue';
 import { computed } from 'vue';
 
 const props = defineProps({
-  cartItems: Object,
-  saveForLaterItems: Object,
+  shoppingItems: Object,
+  wishlistItems: Object,
   taxRate: Number,
-  cartSubTotal: String,
   couponCode: String,
   discount: Number,
   cartTotal: String,
@@ -18,24 +17,24 @@ const props = defineProps({
 /*
  * Save for later
 */
-const saveForLaterItemsCount = computed(() => {
+const wishlistItemsCount = computed(() => {
   let count = 0;
 
-  Object.values(props.saveForLaterItems).forEach(item => {
-    count += item.qty;
+  Object.values(props.wishlistItems).forEach(item => {
+    count++;
   });
 
   return count;
 });
+
+const cartSubTotal = props.shoppingItems.reduce((total, item) => total + item.price, 0);
 </script>
 
 <template>
   <AppLayout title="Cart">
-
     <div class="max-w-7xl mx-auto p-4 space-y-4 sm:px-6 md:flex md:space-y-0 md:space-x-4 lg:px-8">
 
       <div class="flex-1">
-
         <div class="flex flex-col items-center mb-2 md:flex-row md:justify-between">
           <p v-if="$page.props.cartCount < 0" class="text-red-600 text-2xl font-semibold">
             Your cart is empty!
@@ -48,15 +47,14 @@ const saveForLaterItemsCount = computed(() => {
           </Link>
         </div>
 
-        <CartItems :items="cartItems" title="cart"/>
+        <CartItems :items="shoppingItems" title="shopping"/>
 
         <div class="text-center text-red-600 text-2xl font-semibold mt-4 mb-2 md:text-left">
-          <p v-if="saveForLaterItemsCount <= 0">You have saved no items for later!</p>
-          <p v-else>{{ saveForLaterItemsCount }} item(s) saved for later</p>
+          <p v-if="wishlistItemsCount <= 0">You have saved no items for later!</p>
+          <p v-else>{{ wishlistItemsCount }} item(s) saved for later</p>
         </div>
 
-        <CartItems :items="saveForLaterItems" title="saveForLater"/>
-
+        <CartItems :items="wishlistItems" title="wishlist"/>
       </div>
 
       <div class="flex-1">
@@ -72,6 +70,5 @@ const saveForLaterItemsCount = computed(() => {
       </div>
 
     </div>
-
   </AppLayout>
 </template>

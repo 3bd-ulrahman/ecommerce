@@ -7,7 +7,7 @@ import { computed, defineModel } from 'vue';
 
 const props = defineProps({
   taxRate: Number,
-  cartSubTotal: String,
+  cartSubTotal: Number,
   couponCode: String,
   discount: Number,
   cartTotal: String

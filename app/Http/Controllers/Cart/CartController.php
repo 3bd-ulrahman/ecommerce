@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Cart;
 
 use App\Http\Controllers\Controller;
-use App\Models\Product;
 use Gloudemans\Shoppingcart\Facades\Cart;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class CartController extends Controller
@@ -15,11 +15,21 @@ class CartController extends Controller
      */
     public function index()
     {
-        $cartItems = Cart::instance('default')->content();
+        // $shoppingItems = \App\Models\Cart::query()->user()
+        //     ->shopping()
+        //     ->with('product')
+        //     ->get();
+
+        // $wishlistItems = \App\Models\Cart::query()->user()
+        //     ->wishlist()
+        //     ->with('product')
+        //     ->get();
+
+        $shoppingItems = Auth::user()->load('shopping')->shopping;
+
+        $wishlistItems = Auth::user()->load('wishlist')->wishlist;
 
         $taxRate = config('cart.tax');
-
-        $cartSubTotal = Cart::subtotal();
 
         $couponCode = session()->get('coupon')['code'] ?? null;
 
@@ -27,17 +37,15 @@ class CartController extends Controller
 
         $cartTotal = Cart::total();
 
-        $saveForLaterItems = Cart::instance('saveForLater')->content();
-
         return Inertia::render('Cart/Index', compact(
-            'cartItems',
+            'shoppingItems',
+            'wishlistItems',
             'taxRate',
-            'cartSubTotal',
             'couponCode',
             'discount',
-            'cartTotal',
-            'saveForLaterItems'
-        ));
+            'cartTotal'
+        )
+        );
     }
 
     /**
@@ -53,19 +61,11 @@ class CartController extends Controller
      */
     public function store(Request $request)
     {
-        Cart::add(
-            $request->id,
-            $request->name,
-            $request->integer('quantity'),
-            $request->integer('price'),
-            [
-                'total_quantity' => $request->integer('totalQuantity'),
-                'product_code' => $request->product_code,
-                'image' => $request->image,
-                'slug' => $request->slug,
-                'details' => $request->details
+        Auth::user()->shopping()->sync([
+            $request->integer('id') => [
+                'quantity' => $request->integer('quantity')
             ]
-        )->associate(Product::class);
+        ], false);
 
         return to_route('cart.index');
     }
@@ -89,20 +89,18 @@ class CartController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, $id)
     {
-        Cart::instance('default')->update($id, $request->integer('quantity'));
-
-        return to_route('cart.index');
+        Auth::user()->shopping()->updateExistingPivot($id, [
+            'quantity' => $request->integer('quantity'),
+        ]);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $rowId)
+    public function destroy($id)
     {
-        Cart::instance('default')->remove($rowId);
-
-        return to_route('cart.index');
+        Auth::user()->shopping()->detach($id);
     }
 }

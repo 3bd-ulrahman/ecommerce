@@ -10,10 +10,12 @@ defineProps({
 
 watch(() => usePage().props.flash, () => {
   const flashMessage = Object.entries(usePage().props.flash).find(([key, value]) => value !== null);
-  return Toast.fire({
-    icon: flashMessage[0],
-    title: flashMessage[1]
-  });
+  if (flashMessage) {
+    return Toast.fire({
+      icon: flashMessage[0],
+      title: flashMessage[1]
+    });
+  }
 });
 </script>
 

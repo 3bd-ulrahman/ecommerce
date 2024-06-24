@@ -37,8 +37,6 @@ const submit = () => {
         <div class="flex flex-col bg-white shadow-md rounded px-8 py-6">
           <h1 class="text-lg font-semibold text-center underline italic">Login</h1>
 
-          <jet-validation-errors class="mb-4" />
-
           <div v-if="status" class="mb-4 font-medium text-sm text-green-600">
             {{ status }}
           </div>

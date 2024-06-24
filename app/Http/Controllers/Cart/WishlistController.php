@@ -7,7 +7,7 @@ use App\Models\Product;
 use Gloudemans\Shoppingcart\Facades\Cart;
 use Illuminate\Http\Request;
 
-class SaveForLaterController extends Controller
+class WishlistController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -28,25 +28,9 @@ class SaveForLaterController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store($rowId)
+    public function store(\App\Models\Cart $cart)
     {
-        $item = Cart::instance('default')->get($rowId);
-
-        Cart::remove($rowId);
-
-        Cart::instance('saveForLater')->add(
-            $item->id,
-            $item->name,
-            $item->qty,
-            $item->price,
-            [
-                'total_quantity' => $item->options->total_quantity,
-                'product_code' => $item->options->product_code,
-                'image' => $item->options->image,
-                'slug' => $item->options->slug,
-                'details' => $item->options->details
-            ]
-        )->associate(Product::class);
+        $cart->update(['instance' => 'wishlist']);
 
         return to_route('cart.index');
     }
@@ -70,8 +54,9 @@ class SaveForLaterController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, \App\Models\Cart $cart)
     {
+        return $cart;
         Cart::instance('saveForLater')->update($id, $request->integer('quantity'));
 
         return to_route('cart.index');

@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\Cart\CartController;
 use App\Http\Controllers\Cart\MoveToCartController;
-use App\Http\Controllers\Cart\SaveForLaterController;
+use App\Http\Controllers\Cart\WishlistController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\CouponController;
 use App\Http\Controllers\ShopController;
@@ -31,11 +31,11 @@ Route::get('shop/{product:slug}', [ShopController::class, 'show'])->name('shop.s
 /**
  * CART
  */
-Route::resource('cart', CartController::class)->parameter('cart', 'product');
+Route::resource('cart', CartController::class);
 
-Route::post('cart/save-for-later/{product}', [SaveForLaterController::class, 'store'])->name('cart.save-for-later.store');
-Route::patch('cart/save-for-later/{product}', [SaveForLaterController::class, 'update'])->name('cart.save-for-later.update');
-Route::delete('cart/save-for-later/{product}', [SaveForLaterController::class, 'destroy'])->name('cart.save-for-later.destroy');
+Route::post('cart/wishlist/{cart}', [WishlistController::class, 'store'])->name('cart.wishlist.store');
+Route::patch('cart/wishlist/{cart}', [WishlistController::class, 'update'])->name('cart.wishlist.update');
+Route::delete('cart/wishlist/{cart}', [WishlistController::class, 'destroy'])->name('cart.wishlist.destroy');
 
 Route::post('cart/move-to-cart/{product}', MoveToCartController::class)->name('cart.move-to-cart.store');
 

@@ -25,6 +25,9 @@ class Product extends Model
         'quantity',
     ];
 
+    protected $casts = [
+        'price' => 'double'
+    ];
 
     // Relationships
     public function categories(): BelongsToMany
