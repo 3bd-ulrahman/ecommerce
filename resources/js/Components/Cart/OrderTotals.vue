@@ -9,24 +9,24 @@ const props = defineProps({
   taxRate: Number,
   cartSubTotal: Number,
   couponCode: String,
-  discount: Number,
-  cartTotal: String
+  discount: Number
 });
 
 const coupon_code = defineModel('coupon_code');
 
 const estimatedTax = computed(function () {
-  let value = ((props.cartSubTotal - props.discount) * props.taxRate) / 100;
+  let value = (props.cartSubTotal - props.discount) * props.taxRate;
 
   if (value < 0) {
     value = 0;
   }
 
-  return value;
+  return value.toFixed(2);
 });
 
 const total = computed(() => {
-  return props.cartTotal - props.discount;
+  let value = (props.cartSubTotal + (props.cartSubTotal * props.taxRate) ) - props.discount;
+  return value.toFixed(2);
 });
 
 const form = useForm({

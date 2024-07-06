@@ -39,7 +39,7 @@ class HandleInertiaRequests extends Middleware
     public function share(Request $request): array
     {
         $cartCount = auth()->user()
-            ? Auth::user()->shopping()->count()
+            ? Auth::user()->shoppingItems()->count()
             : \Gloudemans\Shoppingcart\Facades\Cart::instance('default')->count();
 
         return array_merge(parent::share($request), [

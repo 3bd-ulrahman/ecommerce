@@ -20,8 +20,8 @@ const count = computed(() => {
 /**
  * Cart
  */
- const moveToCart = (rowId) => {
-  router.post(route('cart.move-to-cart.store', rowId), null, {
+const moveToCart = (id, quantity) => {
+  router.patch(route('cart.update', id), {quantity}, {
     preserveScroll: true,
     onSuccess: page => {
       Toast.fire({
@@ -60,8 +60,8 @@ const removeFromCart = (id) => {
 /*
  * Save for later
 */
-const saveForLater = (rowId) => {
-  router.post(route('cart.wishlist.store', rowId), null, {
+const saveForLater = (id, quantity) => {
+  router.patch(route('cart.wishlist.update', id), {quantity}, {
     preserveScroll: true,
     onSuccess: page => {
       Toast.fire({
@@ -128,7 +128,7 @@ const removeFromSaveForLater = (rowId) => {
             </button>
           </form>
 
-          <form @submit.prevent="saveForLater(item.id)">
+          <form @submit.prevent="saveForLater(item.id, item.pivot.quantity)">
             <button type="submit" class="hover:text-yellow-500">
               Save for later
             </button>
@@ -142,7 +142,7 @@ const removeFromSaveForLater = (rowId) => {
             </button>
           </form>
 
-          <form @submit.prevent="moveToCart(item.rowId)">
+          <form @submit.prevent="moveToCart(item.id, item.pivot.quantity)">
             <button type="submit" class="hover:text-yellow-500">
               Move to cart
             </button>
@@ -154,10 +154,9 @@ const removeFromSaveForLater = (rowId) => {
 
     <div class="flex justify-between w-1/2">
       <div class="flex-1 text-center">
-        <!-- <h1>{{ item }}</h1> -->
         <select v-if="title === 'shopping'" @change="updateCartQuantity(item.id, $event.target.value)"
           class="border bg-white rounded outline-none py-0" tabindex="1">
-          <option :value="qty" :selected="qty === item.quantity" v-for="(qty, index) in item.quantity"
+          <option :value="qty" :selected="qty === item.pivot.quantity" v-for="(qty, index) in item.quantity"
             :key="index">
             {{ qty }}
           </option>
@@ -165,8 +164,9 @@ const removeFromSaveForLater = (rowId) => {
 
         <select v-if="title === 'wishlist'" @change="updateSaveForLaterQuantity(item.id, $event.target.value)"
           class="border bg-white rounded outline-none py-0" tabindex="1">
-          <option :value="qty" :selected="qty === item.quantity" v-for="(qty, index) in item.quantity"
-            :key="index">
+          <option :value="qty" :selected="qty === item.pivot.quantity" v-for="(qty, index) in item.quantity"
+            :key="index"
+          >
             {{ qty }}
           </option>
         </select>

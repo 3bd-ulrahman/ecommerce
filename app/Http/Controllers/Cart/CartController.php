@@ -15,37 +15,20 @@ class CartController extends Controller
      */
     public function index()
     {
-        // $shoppingItems = \App\Models\Cart::query()->user()
-        //     ->shopping()
-        //     ->with('product')
-        //     ->get();
+        $cart = Auth::user()->load(['shoppingItems', 'wishlistItems']);
 
-        // $wishlistItems = \App\Models\Cart::query()->user()
-        //     ->wishlist()
-        //     ->with('product')
-        //     ->get();
-
-        $shoppingItems = Auth::user()->load('shopping')->shopping;
-
-        $wishlistItems = Auth::user()->load('wishlist')->wishlist;
-
-        $taxRate = config('cart.tax');
+        $taxRate = config('settings.tax');
 
         $couponCode = session()->get('coupon')['code'] ?? null;
 
         $discount = session()->get('coupon')['discount'] ?? 0;
 
-        $cartTotal = Cart::total();
-
         return Inertia::render('Cart/Index', compact(
-            'shoppingItems',
-            'wishlistItems',
+            'cart',
             'taxRate',
             'couponCode',
-            'discount',
-            'cartTotal'
-        )
-        );
+            'discount'
+        ));
     }
 
     /**
@@ -61,13 +44,12 @@ class CartController extends Controller
      */
     public function store(Request $request)
     {
-        Auth::user()->shopping()->sync([
+        Auth::user()->cartItems()->sync([
             $request->integer('id') => [
-                'quantity' => $request->integer('quantity')
+                'quantity' => $request->integer('quantity'),
+                'instance' => 'shopping'
             ]
         ], false);
-
-        return to_route('cart.index');
     }
 
     /**
@@ -91,8 +73,9 @@ class CartController extends Controller
      */
     public function update(Request $request, $id)
     {
-        Auth::user()->shopping()->updateExistingPivot($id, [
+        Auth::user()->cartItems()->updateExistingPivot($id, [
             'quantity' => $request->integer('quantity'),
+            'instance' => 'shopping'
         ]);
     }
 
@@ -101,6 +84,6 @@ class CartController extends Controller
      */
     public function destroy($id)
     {
-        Auth::user()->shopping()->detach($id);
+        Auth::user()->shoppingItems()->detach($id);
     }
 }

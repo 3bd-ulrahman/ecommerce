@@ -67,7 +67,10 @@ const category = props.categories.find(category => category.slug === route().par
           <Link :href="route('shop.show', product.slug)" v-for="(product, index) in products" :key="index" v-else
             class="flex flex-col w-full p-4 rounded sm:w-1/2 md:w-1/3"
           >
-            <img :src="product.image" :alt="product.name" class="h-72 object-cover md:w-72 lg:w-96">
+            <img :src="product.image" :alt="product.name"
+              class="h-72 object-cover md:w-72 lg:w-96"
+              loading="lazy"
+            >
             <div class="flex justify-around bg-gray-700 py-2">
               <span class="text-yellow-500">{{ $filters.formatCurrency(product.price) }}</span>
               <span class="text-white">{{ product.name }}</span>

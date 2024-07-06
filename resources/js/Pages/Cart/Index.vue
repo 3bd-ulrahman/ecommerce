@@ -6,12 +6,16 @@ import CartItems from '@/Components/Cart/CartItems.vue';
 import { computed } from 'vue';
 
 const props = defineProps({
-  shoppingItems: Object,
-  wishlistItems: Object,
+  cart: Object,
   taxRate: Number,
   couponCode: String,
-  discount: Number,
-  cartTotal: String,
+  discount: Number
+});
+
+const cartSubTotal = computed(() => {
+  return parseFloat(props.cart.shopping_items.reduce(
+    (total, item) => total + item.price, 0
+  ).toFixed(2));
 });
 
 /*
@@ -20,14 +24,12 @@ const props = defineProps({
 const wishlistItemsCount = computed(() => {
   let count = 0;
 
-  Object.values(props.wishlistItems).forEach(item => {
+  Object.values(props.cart.wishlist_items).forEach(item => {
     count++;
   });
 
   return count;
 });
-
-const cartSubTotal = props.shoppingItems.reduce((total, item) => total + item.price, 0);
 </script>
 
 <template>
@@ -47,14 +49,14 @@ const cartSubTotal = props.shoppingItems.reduce((total, item) => total + item.pr
           </Link>
         </div>
 
-        <CartItems :items="shoppingItems" title="shopping"/>
+        <CartItems :items="cart.shopping_items" title="shopping"/>
 
         <div class="text-center text-red-600 text-2xl font-semibold mt-4 mb-2 md:text-left">
           <p v-if="wishlistItemsCount <= 0">You have saved no items for later!</p>
           <p v-else>{{ wishlistItemsCount }} item(s) saved for later</p>
         </div>
 
-        <CartItems :items="wishlistItems" title="wishlist"/>
+        <CartItems :items="cart.wishlist_items" title="wishlist"/>
       </div>
 
       <div class="flex-1">
@@ -63,8 +65,7 @@ const cartSubTotal = props.shoppingItems.reduce((total, item) => total + item.pr
             taxRate,
             cartSubTotal,
             couponCode,
-            discount,
-            cartTotal
+            discount
           }"
         />
       </div>

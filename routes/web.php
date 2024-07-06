@@ -1,12 +1,12 @@
 <?php
 
 use App\Http\Controllers\Cart\CartController;
-use App\Http\Controllers\Cart\MoveToCartController;
 use App\Http\Controllers\Cart\WishlistController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\CouponController;
 use App\Http\Controllers\ShopController;
 use App\Http\Controllers\WelcomeController;
+use Gloudemans\Shoppingcart\Facades\Cart;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -32,12 +32,8 @@ Route::get('shop/{product:slug}', [ShopController::class, 'show'])->name('shop.s
  * CART
  */
 Route::resource('cart', CartController::class);
-
-Route::post('cart/wishlist/{cart}', [WishlistController::class, 'store'])->name('cart.wishlist.store');
 Route::patch('cart/wishlist/{cart}', [WishlistController::class, 'update'])->name('cart.wishlist.update');
 Route::delete('cart/wishlist/{cart}', [WishlistController::class, 'destroy'])->name('cart.wishlist.destroy');
-
-Route::post('cart/move-to-cart/{product}', MoveToCartController::class)->name('cart.move-to-cart.store');
 
 
 /**
