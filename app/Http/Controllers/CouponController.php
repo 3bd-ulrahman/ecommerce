@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Coupon;
 use Gloudemans\Shoppingcart\Facades\Cart;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 
 class CouponController extends Controller
@@ -38,9 +39,10 @@ class CouponController extends Controller
             ]);
         }
 
-        $subTotal = Cart::instance('default')->subTotal();
+        $cart = Auth::user()->load(['shoppingItems'])->shoppingItems;
+        $subtotal = $cart->reduce(fn ($total, $item) => $total + $item['price'], 0);
 
-        $discount = $coupon->discount($subTotal);
+        $discount = $coupon->discount($subtotal);
 
         session()->put('coupon', [
             'code' => $coupon->code,

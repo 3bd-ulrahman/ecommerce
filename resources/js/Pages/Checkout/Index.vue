@@ -5,14 +5,19 @@ import YellowButton from '@/Components/Buttons/YellowButton.vue';
 import { router, useForm } from '@inertiajs/vue3';
 import states from '@/states.js';
 import { loadStripe } from '@stripe/stripe-js';
-import { nextTick, onBeforeMount, ref } from 'vue';
+import { computed, nextTick, onBeforeMount, ref } from 'vue';
 
 const props = defineProps({
-  cartSubTotal: String,
+  // cartSubTotal: String,
+  // taxRate: Number,
+  // couponCode: String,
+  // discount: Number,
+  // cartTotal: String
+
+  cart: Object,
   taxRate: Number,
   couponCode: String,
-  discount: Number,
-  cartTotal: String
+  discount: Number
 });
 
 const form = useForm({
@@ -25,6 +30,17 @@ const form = useForm({
   name_on_card: '',
   paymentMethod: '',
   coupon_code: ''
+});
+
+const cartSubTotal = computed(() => {
+  return parseFloat(props.cart.shopping_items.reduce(
+    (total, item) => total + item.price, 0
+  ).toFixed(2));
+});
+
+const total = computed(() => {
+  let value = (cartSubTotal.value + (cartSubTotal.value * props.taxRate) ) - props.discount;
+  return value.toFixed(2);
 });
 
 const loading = false;
@@ -40,7 +56,7 @@ onBeforeMount(async () => {
   elements = stripe.elements({
     mode: 'payment',
     currency: 'usd',
-    amount: parseInt(props.cartTotal)
+    amount: parseInt(total.value)
   });
 
   cardElement = elements.create(
@@ -190,7 +206,7 @@ async function processPayment() {
 
             <div class="-mx-3 md:flex mb-6">
               <div class="px-3 mb-6 w-full md:mb-0">
-                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="email">
+                <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="phone">
                   Phone
                 </label>
                 <input type="tel" v-model="form.phone"
@@ -245,7 +261,15 @@ async function processPayment() {
       </div>
 
       <div class="flex-1">
-        <OrderTotals v-bind="props" v-model:coupon_code="form.coupon_code"/>
+        <OrderTotals
+          v-bind="{
+            taxRate,
+            cartSubTotal,
+            couponCode,
+            discount
+          }"
+          v-model:coupon_code="form.coupon_code"
+        />
       </div>
 
     </div>

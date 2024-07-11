@@ -7,6 +7,7 @@ use App\Mail\OrderReceived;
 use App\Services\CartService;
 use Gloudemans\Shoppingcart\Facades\Cart;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
@@ -22,7 +23,7 @@ class CheckoutController extends Controller
      */
     public function index(CartService $cartService)
     {
-        if (Cart::instance('default')->count() === 0) {
+        if (Auth::user()->shoppingItems()->count() === 0) {
             return to_route('shop.index')->with([
                 'error' => 'Your cart is empty',
             ]);
@@ -44,7 +45,8 @@ class CheckoutController extends Controller
      */
     public function store(CheckoutRequest $request)
     {
-        if (Cart::instance('default')->count() === 0) {
+        $cart = Auth::user()->load(['shoppingItems'])->shoppingItems;
+        if ($cart->count() === 0) {
             return to_route('shop.index')->with([
                 'error' => 'Your cart is empty',
             ]);
@@ -57,15 +59,15 @@ class CheckoutController extends Controller
         }
 
         $discount = Session::get('coupon.discount') ?? 0;
-        $subtotal = (int) Cart::instance('default')->subtotal();
-        $tax = config('cart.tax');
-        $total = (int) Cart::instance('default')->total() - $discount;
+        $subtotal = $cart->reduce(fn ($total, $item) => $total + $item['price'], 0);
+        $tax = config('settings.tax');
+        $total = round($subtotal + $subtotal * $tax - $discount, 2);
 
-        $data = Cart::content()->mapWithKeys(function ($item) {
+        $data = $cart->mapWithKeys(function ($item) {
             return [
                 $item->id => [
                     'price' => $item->price,
-                    'quantity' => $item->qty,
+                    'quantity' => $item->quantity,
                 ]
             ];
         })->toArray();
@@ -95,11 +97,13 @@ class CheckoutController extends Controller
             $pdf = LaravelMpdf::loadView('pdf.invoice', ['invoice' => $order]);
 
             Mail::to($user->email)->queue(
-                new OrderReceived(
+                (new OrderReceived(
                     $order,
                     base64_encode($pdf->output())
-                )
+                ))->afterCommit()
             );
+
+            Auth::user()->shoppingItems()->detach();
 
             return Inertia::render('Checkout/Thanks', [
                 'order' => $order->load('products'),
