@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CheckoutRequest;
 use App\Mail\OrderReceived;
+use App\Models\Order;
 use App\Services\CartService;
 use Gloudemans\Shoppingcart\Facades\Cart;
 use Illuminate\Http\Request;
@@ -67,7 +68,7 @@ class CheckoutController extends Controller
             return [
                 $item->id => [
                     'price' => $item->price,
-                    'quantity' => $item->quantity,
+                    'quantity' => $item->pivot->quantity,
                 ]
             ];
         })->toArray();

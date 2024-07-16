@@ -9,7 +9,6 @@ use App\Http\Controllers\WelcomeController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-
 /**
  * Constant
  */
@@ -19,13 +18,11 @@ define('PAGINATION', 10);
 
 Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
 
-
 /**
  * SHOP
  */
 Route::get('shop', [ShopController::class, 'index'])->name('shop.index');
 Route::get('shop/{product:slug}', [ShopController::class, 'show'])->name('shop.show');
-
 
 /**
  * CART
@@ -33,7 +30,6 @@ Route::get('shop/{product:slug}', [ShopController::class, 'show'])->name('shop.s
 Route::resource('cart', CartController::class);
 Route::patch('cart/wishlist/{cart}', [WishlistController::class, 'update'])->name('cart.wishlist.update');
 Route::delete('cart/wishlist/{cart}', [WishlistController::class, 'destroy'])->name('cart.wishlist.destroy');
-
 
 /**
  * COUPONS
@@ -43,7 +39,6 @@ Route::middleware('auth')->group(function () {
     Route::delete('coupons', [CouponController::class, 'destroy'])->name('coupons.destroy');
 });
 
-
 /**
  * CHECKOUT
  */
@@ -52,7 +47,6 @@ Route::middleware('auth')->group(function () {
     Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
 });
 
-
 /**
  * ORDERS
  */
@@ -60,7 +54,6 @@ Route::middleware('auth')->group(function () {
     Route::get('orders', [\App\Http\Controllers\OrderController::class, 'index'])->name('orders.index');
     Route::get('orders/{order:reference_code}', [\App\Http\Controllers\OrderController::class, 'show'])->name('orders.show');
 });
-
 
 /**
  * INVOICES

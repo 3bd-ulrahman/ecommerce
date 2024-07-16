@@ -8,12 +8,6 @@ import { loadStripe } from '@stripe/stripe-js';
 import { computed, nextTick, onBeforeMount, ref } from 'vue';
 
 const props = defineProps({
-  // cartSubTotal: String,
-  // taxRate: Number,
-  // couponCode: String,
-  // discount: Number,
-  // cartTotal: String
-
   cart: Object,
   taxRate: Number,
   couponCode: String,
