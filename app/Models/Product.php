@@ -6,11 +6,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Laravel\Scout\Searchable;
 use NumberFormatter;
 
 class Product extends Model
 {
-    use HasFactory;
+    use HasFactory, Searchable;
 
     protected $table = 'products';
 
@@ -28,6 +29,13 @@ class Product extends Model
     protected $casts = [
         'price' => 'double'
     ];
+
+    public function toSearchableArray(): array
+    {
+        return [
+            'name' => $this->name,
+        ];
+    }
 
     // Relationships
     public function categories(): BelongsToMany

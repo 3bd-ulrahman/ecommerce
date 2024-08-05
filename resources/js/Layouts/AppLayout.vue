@@ -2,6 +2,7 @@
 import { Head, usePage } from '@inertiajs/vue3';
 import Nav from '@/Components/Nav.vue';
 import Footer from '@/Components/Footer.vue';
+import Search from '@/Components/Search.vue';
 import { watch } from 'vue';
 
 defineProps({
@@ -21,6 +22,7 @@ watch(() => usePage().props.flash, () => {
 
 <template>
   <div>
+    <!-- <Search /> -->
     <Head :title="title" />
 
     <div class="min-h-screen bg-gray-100">

@@ -25,6 +25,11 @@ Route::get('shop', [ShopController::class, 'index'])->name('shop.index');
 Route::get('shop/{product:slug}', [ShopController::class, 'show'])->name('shop.show');
 
 /**
+ * SEARCH
+ */
+Route::get('search', \App\Http\Controllers\SearchController::class)->name('search');
+
+/**
  * CART
  */
 Route::resource('cart', CartController::class);

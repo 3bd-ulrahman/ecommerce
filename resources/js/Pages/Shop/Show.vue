@@ -3,7 +3,7 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import { Link } from '@inertiajs/vue3';
 import SecondaryHeader from '@/Components/SecondaryHeader.vue';
 import GrayButton from '@/Components/Buttons/GrayButton.vue';
-import { useForm } from '@inertiajs/vue3'
+import { useForm } from '@inertiajs/vue3';
 
 const props = defineProps({
   product: Object
