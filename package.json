@@ -19,7 +19,11 @@
     "vue": "^3.4.31"
   },
   "dependencies": {
+    "@algolia/autocomplete-js": "^1.17.4",
+    "@algolia/autocomplete-theme-classic": "^1.17.4",
     "@stripe/stripe-js": "^2.1.1",
+    "@vitejs/plugin-vue-jsx": "^4.0.0",
+    "algoliasearch": "^4.24.0",
     "sweetalert2": "^11.7.22"
   }
 }

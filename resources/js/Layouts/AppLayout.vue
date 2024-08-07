@@ -22,7 +22,6 @@ watch(() => usePage().props.flash, () => {
 
 <template>
   <div>
-    <!-- <Search /> -->
     <Head :title="title" />
 
     <div class="min-h-screen bg-gray-100">

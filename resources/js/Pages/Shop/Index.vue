@@ -3,6 +3,7 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import { Link } from '@inertiajs/vue3';
 import SecondaryHeader from '@/Components/SecondaryHeader.vue';
 import NoItemsFound from '@/Components/NoItemsFound.vue';
+import Search from '@/Components/Search.vue';
 
 const props = defineProps({
   products: Object,
@@ -22,7 +23,7 @@ const category = props.categories.find(category => category.slug === route().par
       </template>
 
       <template #search>
-        search
+        <Search />
       </template>
     </SecondaryHeader>
 
