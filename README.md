@@ -13,3 +13,4 @@
 -   Checkout with stripe
 -   Export invoice in pdf
 -   Emailing invoice pdf
+-   Algolia autocomple search
