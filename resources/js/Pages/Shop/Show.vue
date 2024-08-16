@@ -6,7 +6,8 @@ import GrayButton from '@/Components/Buttons/GrayButton.vue';
 import { useForm } from '@inertiajs/vue3';
 
 const props = defineProps({
-  product: Object
+  product: Object,
+  similarProducts: Object
 });
 
 const form = useForm({
@@ -57,26 +58,6 @@ const submit = function () {
       <div class="flex-1 sm:border-r">
         <div class="border-2 p-2">
           <img :src="product.image" :alt="product.name" class="w-full object-cover">
-        </div>
-        <div class="flex space-x-4 mt-4">
-          <button type="button">
-            <icon name="angle-left" class="w-4 h-4 fill-current"></icon>
-          </button>
-          <div class="w-1/4">
-            <img :src="product.image" :alt="product.name" class="object-cover">
-          </div>
-          <div class="w-1/4">
-            <img :src="product.image" :alt="product.name" class="object-cover">
-          </div>
-          <div class="w-1/4">
-            <img :src="product.image" :alt="product.name" class="object-cover">
-          </div>
-          <div class="w-1/4">
-            <img :src="product.image" :alt="product.name" class="object-cover">
-          </div>
-          <button type="button">
-            <icon name="angle-right" class="w-4 h-4 fill-current"></icon>
-          </button>
         </div>
       </div>
       <div class="flex-1 space-y-6 my-4 sm:mt-0 sm:border-l sm:pl-4">
@@ -172,16 +153,7 @@ const submit = function () {
           <p>Suggested based on your search</p>
         </div>
         <div class="flex space-x-4">
-          <Link href="#" class="flex border border-black w-1/4 h-24">
-            <img :src="product.image" :alt="product.name" class="w-full object-cover">
-          </Link>
-          <Link href="#" class="flex border border-black w-1/4 h-24">
-            <img :src="product.image" :alt="product.name" class="w-full object-cover">
-          </Link>
-          <Link href="#" class="flex border border-black w-1/4 h-24">
-            <img :src="product.image" :alt="product.name" class="w-full object-cover">
-          </Link>
-          <Link href="#" class="flex border border-black w-1/4 h-24">
+          <Link v-for="product in similarProducts" :href="route('shop.show', product.slug)" class="flex border border-black w-1/4 h-24">
             <img :src="product.image" :alt="product.name" class="w-full object-cover">
           </Link>
         </div>

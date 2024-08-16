@@ -49,8 +49,13 @@ class ShopController extends Controller
      */
     public function show(Product $product)
     {
+        $similarProducts = Product::whereHas('categories', function ($query) use ($product) {
+            $query->whereIn('categories.id', $product->categories->pluck('id'));
+        })->where('products.id', '!=', $product->id)->take(4)->inRandomOrder()->get();
+
         return Inertia::render('Shop/Show', [
-            'product' => $product
+            'product' => $product,
+            'similarProducts' => $similarProducts
         ]);
     }
 
